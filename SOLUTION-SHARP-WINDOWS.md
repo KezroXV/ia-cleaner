@@ -70,3 +70,4 @@ Le code est déjà configuré pour fonctionner sans Sharp si nécessaire. L'appl
 
 **Utilisez la Solution 1 (Mode Développeur)** - C'est la solution la plus propre et permanente. Une fois activé, vous n'aurez plus jamais ce problème avec les symlinks.
 
+

@@ -80,3 +80,4 @@ Pour vérifier que votre configuration est correcte :
 
 Le code a maintenant une meilleure validation qui vous donnera un message d'erreur plus clair si la configuration est incorrecte.
 
+
