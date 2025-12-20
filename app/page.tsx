@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Header } from "@/components/layout/Header";
 import { ImageUploadPanel } from "@/components/image-upload/ImageUploadPanel";
 import { ImageResultPanel } from "@/components/image-upload/ImageResultPanel";
 import { ArrowConnector } from "@/components/image-upload/ArrowConnector";
@@ -54,7 +53,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <main className="container mx-auto px-4 py-16">
         <div className="mx-auto max-w-7xl">
           {/* Main Content Card */}

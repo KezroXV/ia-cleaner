@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import formidable from "formidable";
 import { NextRequest } from "next/server";
 
@@ -24,8 +25,9 @@ export async function parseFormData(request: NextRequest): Promise<{
     // Convertir NextRequest en Node Request
     const formData = await request.formData();
 
-    const fields: formidable.Fields = {};
-    const files: formidable.Files = {};
+    // Utiliser Record pour créer des types mutables compatibles avec formidable
+    const fields: Record<string, string[]> = {};
+    const files: Record<string, formidable.File[]> = {};
 
     for (const [key, value] of formData.entries()) {
       if (value instanceof File) {
@@ -44,7 +46,10 @@ export async function parseFormData(request: NextRequest): Promise<{
       }
     }
 
-    return { fields, files };
+    // Convertir en types formidable pour le retour (compatible avec le type)
+    const resultFields: formidable.Fields = fields as formidable.Fields;
+    const resultFiles: formidable.Files = files as formidable.Files;
+    return { fields: resultFields, files: resultFiles };
   } catch (error) {
     console.error("❌ Erreur parsing FormData:", error);
     throw new Error("Échec du parsing du formulaire");
@@ -92,7 +97,9 @@ export async function processImage(fileBuffer: Buffer): Promise<Buffer> {
       console.warn("⚠️ Sharp non disponible, utilisation du buffer original");
       return fileBuffer;
     }
-    throw new Error(`Échec du traitement de l'image: ${error.message || error}`);
+    throw new Error(
+      `Échec du traitement de l'image: ${error.message || error}`
+    );
   }
 }
 
@@ -103,4 +110,3 @@ export function validateImageType(mimeType: string): boolean {
   const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
   return allowedTypes.includes(mimeType.toLowerCase());
 }
-
