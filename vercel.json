@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd ia-cleaner && pnpm install && pnpm run build",
+  "outputDirectory": "ia-cleaner/.next",
+  "installCommand": "cd ia-cleaner && pnpm install",
+  "framework": "nextjs",
+  "rootDirectory": "ia-cleaner"
+}
+
