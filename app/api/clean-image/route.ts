@@ -4,7 +4,7 @@ import {
   processImage,
   validateImageType,
 } from "@/utils/file-handler";
-import { processImageTransformation } from "@/lib/vertex-ai";
+import { processImageTransformation } from "@/lib/gemini";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import type { CleanImageResponse } from "@/types";
 
@@ -70,11 +70,18 @@ export async function POST(request: NextRequest) {
     console.log("🎨 Type de prompt:", promptType);
 
     // 6. Transformation IA (Analyse + Génération)
+    console.log("🤖 Utilisation de Nano Banana (Gemini 2.5 Flash Image)");
+    console.log("🎨 Mode: Image-to-Image Editing + Generation");
+    console.log("📊 Type de transformation:", promptType);
+    console.log("💰 Coût estimé: $0.039 par image");
     console.log("🤖 Démarrage de la transformation IA...");
     const { generatedImage, analysis } = await processImageTransformation(
       processedBuffer,
       promptType
     );
+    console.log("✅ Transformation Gemini terminée");
+    console.log("📏 Analyse:", analysis.substring(0, 100) + "...");
+    console.log("🖼️ Image:", generatedImage.length, "bytes");
 
     // 7. Upload vers Cloudinary
     console.log("☁️ Upload du résultat...");
@@ -109,6 +116,11 @@ export async function POST(request: NextRequest) {
     console.error("❌ ERREUR:", err);
     console.error("❌ Stack:", err.stack);
 
+    // Détecter les erreurs de quota
+    const isQuotaError = err?.message?.includes("Quota dépassé") || 
+                         err?.message?.includes("429") ||
+                         err?.message?.includes("quota");
+    
     // S'assurer qu'on retourne toujours du JSON, jamais du HTML
     const errorMessage =
       err?.message || "Une erreur est survenue lors de la génération";
@@ -123,9 +135,12 @@ export async function POST(request: NextRequest) {
       details: errorDetails,
     };
 
+    // Retourner 429 pour les erreurs de quota, 500 pour les autres
+    const statusCode = isQuotaError ? 429 : 500;
+
     try {
       return NextResponse.json(response, {
-        status: 500,
+        status: statusCode,
         headers: {
           "Content-Type": "application/json",
           "Access-Control-Allow-Origin": "*",
