@@ -13,8 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "NIITE - Clear AI",
-  description: "Découvrez votre espace comme s'il venait d'être nettoyé avec notre IA",
+  title: "Clear AI",
+  description:
+    "Découvrez votre espace comme s'il venait d'être nettoyé avec notre IA",
 };
 
 export default function RootLayout({
