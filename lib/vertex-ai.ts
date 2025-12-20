@@ -95,13 +95,18 @@ export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
 
 /**
  * Génère une image "nettoyée" avec Imagen 3 via l'API REST
+ * Utilise l'image originale comme référence pour préserver la structure exacte (comme Nano Banana)
  */
 export async function generateCleanImage(
   analysis: string,
-  promptType: PromptType = "realistic"
+  promptType: PromptType = "realistic",
+  originalImageBuffer?: Buffer
 ): Promise<Buffer> {
   try {
     console.log("🎨 Génération de l'image avec Imagen 3...");
+    if (originalImageBuffer) {
+      console.log("📸 Utilisation de l'image originale comme référence (mode image-to-image)");
+    }
 
     const generationPrompt = getGenerationPrompt(promptType, analysis);
 
@@ -120,13 +125,25 @@ export async function generateCleanImage(
       throw new Error("Impossible d'obtenir le token d'authentification");
     }
 
-    // Préparer la requête
+    // Préparer la requête avec image de référence si disponible
+    const instance: any = {
+      prompt: generationPrompt,
+    };
+
+    // Si on a l'image originale, l'utiliser comme référence (image-to-image)
+    // Cela permet de préserver la structure exacte comme Nano Banana
+    if (originalImageBuffer) {
+      const base64Image = originalImageBuffer.toString("base64");
+      instance.baseImage = {
+        bytesBase64Encoded: base64Image,
+      };
+      // Ajouter un paramètre de force pour l'édition d'image
+      // Plus la valeur est élevée, plus l'image générée ressemble à l'originale
+      instance.imageEditingStrength = 0.7; // 0.0 = nouvelle image, 1.0 = très proche de l'original
+    }
+
     const requestBody = {
-      instances: [
-        {
-          prompt: generationPrompt,
-        },
-      ],
+      instances: [instance],
       parameters: {
         sampleCount: 1,
         aspectRatio: "1:1", // Options: '1:1', '16:9', '9:16', '4:3', '3:4'
@@ -134,6 +151,9 @@ export async function generateCleanImage(
           "blurry, low quality, distorted, unrealistic, cartoonish, anime, drawing, painting, rendered, artificial, fake, oversaturated, overexposed",
         safetyFilterLevel: "block_some",
         personGeneration: "dont_allow",
+        // Paramètres améliorés pour une meilleure qualité (style Nano Banana)
+        guidanceScale: 7.5, // Contrôle la fidélité au prompt (plus élevé = plus fidèle)
+        seed: undefined, // Peut être défini pour la reproductibilité
       },
     };
 
@@ -218,16 +238,22 @@ export async function generateCleanImage(
 
 /**
  * Flux complet: Analyse + Génération
+ * Utilise l'image originale comme référence pour préserver la structure (comme Nano Banana)
  */
 export async function processImageTransformation(
   imageBuffer: Buffer,
   promptType: PromptType = "realistic"
 ): Promise<{ generatedImage: Buffer; analysis: string }> {
-  // Étape 1: Analyser l'image
+  // Étape 1: Analyser l'image avec Gemini Vision pour obtenir une description détaillée
   const analysis = await analyzeMessyRoom(imageBuffer);
 
-  // Étape 2: Générer l'image nettoyée
-  const generatedImage = await generateCleanImage(analysis, promptType);
+  // Étape 2: Générer l'image nettoyée en utilisant l'image originale comme référence
+  // Cela permet de préserver la structure exacte de la pièce (comme Nano Banana)
+  const generatedImage = await generateCleanImage(
+    analysis,
+    promptType,
+    imageBuffer // Passer l'image originale comme référence
+  );
 
   return { generatedImage, analysis };
 }
