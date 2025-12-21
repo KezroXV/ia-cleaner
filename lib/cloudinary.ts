@@ -92,6 +92,48 @@ export async function uploadToCloudinary(
 }
 
 /**
+ * Génère une URL Cloudinary optimisée pour l'affichage
+ * Utilise des transformations pour réduire la taille et améliorer les performances
+ */
+export function getOptimizedImageUrl(
+  originalUrl: string,
+  options: {
+    width?: number;
+    quality?: "auto" | "auto:good" | "auto:best" | number;
+    format?: "auto" | "webp" | "avif" | "jpg";
+  } = {}
+): string {
+  if (!originalUrl || !originalUrl.includes("res.cloudinary.com")) {
+    return originalUrl;
+  }
+
+  const {
+    width = 1200,
+    quality = "auto:good",
+    format = "auto",
+  } = options;
+
+  // Si l'URL contient déjà des transformations, on les préserve et on ajoute les nôtres
+  if (originalUrl.includes("/image/upload/")) {
+    const parts = originalUrl.split("/image/upload/");
+    if (parts.length === 2) {
+      const [base, rest] = parts;
+      // Construire les transformations
+      const transformations = [
+        `w_${width}`,
+        `c_limit`, // Limite la taille sans recadrer
+        `q_${quality}`,
+        `f_${format}`,
+      ].join(",");
+
+      return `${base}/image/upload/${transformations}/${rest}`;
+    }
+  }
+
+  return originalUrl;
+}
+
+/**
  * Supprime une image de Cloudinary (cleanup)
  */
 export async function deleteFromCloudinary(publicId: string): Promise<void> {

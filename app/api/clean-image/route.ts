@@ -5,7 +5,7 @@ import {
   validateImageType,
 } from "@/utils/file-handler";
 import { processImageTransformation } from "@/lib/gemini";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinary, getOptimizedImageUrl } from "@/lib/cloudinary";
 import type { CleanImageResponse } from "@/types";
 
 // Configuration
@@ -95,10 +95,17 @@ export async function POST(request: NextRequest) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ Succès en ${duration}s`);
 
-    // 9. Réponse
+    // 9. Générer une URL optimisée pour l'affichage
+    const optimizedUrl = getOptimizedImageUrl(uploadResult.secure_url, {
+      width: Math.min(uploadResult.width, 1200), // Limiter à 1200px max
+      quality: "auto:good",
+      format: "auto", // WebP ou AVIF selon le navigateur
+    });
+
+    // 10. Réponse
     const response: CleanImageResponse = {
       success: true,
-      generatedImageUrl: uploadResult.secure_url,
+      generatedImageUrl: optimizedUrl, // URL optimisée pour un chargement plus rapide
       meta: {
         width: uploadResult.width,
         height: uploadResult.height,

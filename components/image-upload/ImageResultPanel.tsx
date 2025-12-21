@@ -1,14 +1,35 @@
 "use client";
 
 import { Sparkles, Loader2 } from "lucide-react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
+import { ProgressIndicator } from "./ProgressIndicator";
 
 interface ImageResultPanelProps {
   result?: string;
   loading?: boolean;
+  startTime?: number;
 }
 
-export function ImageResultPanel({ result, loading }: ImageResultPanelProps) {
+// L'URL est déjà optimisée côté serveur, pas besoin de transformation supplémentaire
+
+export function ImageResultPanel({
+  result,
+  loading,
+  startTime,
+}: ImageResultPanelProps) {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+
+  // Réinitialiser l'état de chargement quand le résultat change
+  useEffect(() => {
+    if (result) {
+      setImageLoading(true);
+      setImageError(false);
+    }
+  }, [result]);
+
   return (
     <div
       className={cn(
@@ -18,23 +39,46 @@ export function ImageResultPanel({ result, loading }: ImageResultPanelProps) {
     >
       {result ? (
         <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden">
-          <img
-            src={result}
-            alt="Résultat"
-            className="w-full h-full object-cover"
-          />
+          {imageLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+              <Loader2 className="h-12 w-12 text-yellow-400 animate-spin" />
+            </div>
+          )}
+          {imageError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+              <p className="text-gray-500">Erreur de chargement de l'image</p>
+            </div>
+          ) : (
+            <Image
+              src={result}
+              alt="Résultat"
+              fill
+              className={cn(
+                "object-cover transition-opacity duration-300",
+                imageLoading ? "opacity-0" : "opacity-100"
+              )}
+              onLoad={() => setImageLoading(false)}
+              onError={() => {
+                setImageLoading(false);
+                setImageError(true);
+              }}
+              priority={!loading}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            />
+          )}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center p-16 text-center">
+        <div className="flex flex-col items-center justify-center p-8 text-center">
           {loading ? (
-            <>
-              <div className="mb-8 flex h-28 w-28 items-center justify-center rounded-full bg-yellow-50">
-                <Loader2 className="h-14 w-14 text-yellow-400 animate-spin" />
+            <div className="w-full max-w-md">
+              <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-yellow-50 mx-auto">
+                <Loader2 className="h-10 w-10 text-yellow-400 animate-spin" />
               </div>
-              <p className="mb-2 text-lg font-semibold text-gray-900">
+              <h3 className="mb-6 text-xl font-semibold text-gray-900">
                 Génération en cours...
-              </p>
-            </>
+              </h3>
+              <ProgressIndicator loading={loading} startTime={startTime} />
+            </div>
           ) : (
             <>
               <div className="mb-8 flex h-28 w-28 items-center justify-center rounded-full bg-yellow-50">

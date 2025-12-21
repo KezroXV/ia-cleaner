@@ -12,6 +12,7 @@ export default function HomePage() {
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [startTime, setStartTime] = useState<number | undefined>(undefined);
 
   const handleFileSelect = (selectedFile: File) => {
     setFile(selectedFile);
@@ -26,6 +27,7 @@ export default function HomePage() {
     setLoading(true);
     setError("");
     setResult("");
+    setStartTime(Date.now()); // Enregistrer le temps de début
 
     try {
       const formData = new FormData();
@@ -48,6 +50,7 @@ export default function HomePage() {
       setError(err.message || "Une erreur est survenue");
     } finally {
       setLoading(false);
+      setStartTime(undefined);
     }
   };
 
@@ -71,7 +74,7 @@ export default function HomePage() {
               </div>
 
               {/* Result Panel */}
-              <ImageResultPanel result={result} loading={loading} />
+              <ImageResultPanel result={result} loading={loading} startTime={startTime} />
             </div>
 
             {/* CTA Button */}
