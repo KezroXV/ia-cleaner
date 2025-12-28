@@ -1,10 +1,11 @@
 "use client";
 
-import { Sparkles, Loader2 } from "lucide-react";
+import { Sparkles, Loader2, Download } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { ProgressIndicator } from "./ProgressIndicator";
+import { Button } from "@/components/ui/button";
 
 interface ImageResultPanelProps {
   result?: string;
@@ -29,6 +30,35 @@ export function ImageResultPanel({
       setImageError(false);
     }
   }, [result]);
+
+  const handleDownload = async () => {
+    if (!result) return;
+
+    try {
+      // Récupérer l'image depuis l'URL
+      const response = await fetch(result);
+      const blob = await response.blob();
+      
+      // Créer un lien de téléchargement
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      
+      // Générer un nom de fichier avec timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      link.download = `image-generee-${timestamp}.jpg`;
+      
+      // Déclencher le téléchargement
+      document.body.appendChild(link);
+      link.click();
+      
+      // Nettoyer
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Erreur lors du téléchargement:", error);
+    }
+  };
 
   return (
     <div
@@ -65,6 +95,19 @@ export function ImageResultPanel({
               priority={!loading}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
+          )}
+          {!imageLoading && !imageError && (
+            <div className="absolute top-4 right-4 z-10">
+              <Button
+                onClick={handleDownload}
+                variant="default"
+                size="sm"
+                className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg border border-gray-200"
+              >
+                <Download className="h-4 w-4" />
+                Télécharger
+              </Button>
+            </div>
           )}
         </div>
       ) : (
