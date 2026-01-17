@@ -150,16 +150,22 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
  * Adapté selon le type d'espace détecté
  */
 export function getAnalysisPrompt(spaceType: SpaceType = "auto"): string {
-  const basePrompt = `Analyze this image in EXTREME DETAIL to enable identical reconstruction after cleaning.
+  const basePrompt = `Analyze this image in EXTREME DETAIL to enable IDENTICAL reconstruction after cleaning.
 
-## 1. CAMERA & PERSPECTIVE
+⚠️ CRITICAL: Your analysis will be used to recreate this EXACT SAME space, just cleaned. Be EXTREMELY precise with ALL details.
 
-- Camera angle (eye level / high angle / low angle / bird's eye)
-- Distance from subject (close-up / medium / wide shot)
-- Lens characteristics and field of view
-- Depth of field (what's in focus, what's blurred)
-- Composition (rule of thirds, symmetry, leading lines)
-- Vanishing points and perspective lines`;
+⚠️ CONSISTENCY REQUIREMENT: For the same image, you MUST produce the SAME analysis every time. Be systematic and thorough. Follow the same structure and level of detail consistently.
+
+## 1. CAMERA & PERSPECTIVE (CRITICAL FOR PRESERVATION)
+
+- EXACT camera angle (eye level / high angle / low angle / bird's eye / tilted)
+- EXACT distance from subject (close-up / medium / wide shot / extreme wide)
+- Lens characteristics: field of view (wide / normal / telephoto), distortion
+- Depth of field: what's in sharp focus, what's blurred, blur amount
+- Composition: rule of thirds, symmetry, leading lines, focal points
+- Vanishing points: where perspective lines converge
+- Camera position relative to the space (centered / off-center / angled)
+- Any camera tilt or rotation`;
 
   const spaceSpecificPrompts: Record<Exclude<SpaceType, "auto">, string> = {
     interior: `## 2. ARCHITECTURAL STRUCTURE
@@ -525,54 +531,93 @@ For EACH item:
 - Overall brightness and mood`,
   };
 
-  const commonSections = `## 6. COLOR PALETTE
+  const commonSections = `## 6. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
 
-- Dominant colors (largest areas)
-- Secondary colors
-- Accent colors
-- Color relationships and harmony
-- Warm vs cool tones balance
-- Saturation levels (vibrant / muted / neutral)
+For EACH major surface and element, specify:
 
-## 7. CLUTTER & MESS (TO BE REMOVED)
+- Dominant colors (largest areas) - be SPECIFIC (e.g., "warm beige", "cool gray", "navy blue")
+- Secondary colors - exact shades and where they appear
+- Accent colors - exact shades and locations
+- Color relationships and harmony (complementary, analogous, monochromatic)
+- Warm vs cool tones balance (percentage warm vs cool)
+- Saturation levels (vibrant / muted / neutral) - be specific
+- Color temperature (warm / neutral / cool)
+- Any color gradients or transitions
 
-List ALL items that make the space messy:
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
 
-- Dirty dishes and their exact locations
-- Scattered clothes and where they are
-- Trash, debris, and waste items
-- Stains on surfaces (location, type, severity)
-- Disorganized items (papers, tools, etc.)
-- Dirt, dust, grime accumulation
-- Water marks, mold, or mildew
-- Any broken or damaged elements
-- Leaves, branches (for outdoor spaces)
-- Algae (green / black / yellow), pool debris, floating objects (for pool areas - CRITICAL)
-- Cloudy/murky water, scum, foam on water surface (for pools)
-- Dirt and debris on pool bottom and walls (for pools)
-- Stains on pool tiles, decking, coping (for pools)
+## 7. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
 
-## 8. ELEMENTS TO PRESERVE
+List ALL items that make the space messy. For EACH item, specify:
 
-List items that should STAY exactly as they are:
+- Item type and description
+- EXACT location (which surface, position relative to other items)
+- Size and quantity
+- Condition (dirty, broken, scattered, etc.)
+- Specific examples:
+  * Dirty dishes and their exact locations
+  * Scattered clothes and where they are
+  * Trash, debris, and waste items (locations)
+  * Stains on surfaces (location, type, severity, size)
+  * Disorganized items (papers, tools, etc.) and their locations
+  * Dirt, dust, grime accumulation (where, how much)
+  * Water marks, mold, or mildew (locations, extent)
+  * Any broken or damaged elements
+  * Leaves, branches (for outdoor spaces - exact locations)
+  * Algae (green / black / yellow), pool debris, floating objects (for pool areas - CRITICAL)
+  * Cloudy/murky water, scum, foam on water surface (for pools - describe extent)
+  * Dirt and debris on pool bottom and walls (for pools - locations and amount)
+  * Stains on pool tiles, decking, coping (for pools - exact locations)
 
-- Permanent fixtures (pipes, drains, vents)
-- Decorative items in their proper place
-- Tools or equipment that belong in the space
-- Any hoses, cords, or functional items
-- Architectural details
-- Functional outdoor equipment
-- Pool equipment and safety features
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
 
-## 9. ATMOSPHERE & STYLE
+## 8. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
 
-- Overall design style (minimalist / maximalist / rustic / modern / traditional)
-- Era or time period feel
-- Mood and ambiance
-- Cultural or regional characteristics
+List items that should STAY exactly as they are. For EACH item, specify:
+
+- Item type and description
+- EXACT position (distance from walls, relationships to other items)
+- Size and orientation
+- Why it should stay (permanent fixture, functional, decorative)
+- Specific examples:
+  * Permanent fixtures (pipes, drains, vents) - exact positions
+  * Decorative items in their proper place - positions and styles
+  * Tools or equipment that belong in the space - positions and types
+  * Any hoses, cords, or functional items - positions and routing
+  * Architectural details - exact locations and styles
+  * Functional outdoor equipment - positions and types
+  * Pool equipment and safety features - exact positions and types
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only organization/cleanliness can change.
+
+## 9. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design style (minimalist / maximalist / rustic / modern / traditional / industrial / etc.)
+- Era or time period feel (contemporary / vintage / classic / etc.)
+- Mood and ambiance (cozy / spacious / industrial / luxurious / etc.)
+- Cultural or regional characteristics (if visible)
 - Quality level (luxury / standard / budget)
+- Overall aesthetic coherence
 
-Be EXTREMELY precise with spatial relationships, measurements, colors, and positions. The goal is to describe this space so accurately that it can be recreated identically, just cleaned.`;
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.
+
+## 10. FINAL VERIFICATION CHECKLIST
+
+Before completing your analysis, verify you have described:
+
+✓ EXACT camera angle and perspective
+✓ EXACT spatial layout and dimensions
+✓ EXACT positions of ALL furniture and objects
+✓ EXACT materials, colors, and patterns for ALL surfaces
+✓ EXACT lighting conditions and shadows
+✓ EXACT color palette and relationships
+✓ COMPLETE list of ALL clutter and mess to remove
+✓ COMPLETE list of ALL elements to preserve
+✓ EXACT atmosphere and style
+
+⚠️ CRITICAL: Be EXTREMELY precise with spatial relationships, measurements, colors, and positions. The goal is to describe this space so accurately that it can be recreated IDENTICALLY, just cleaned. Every detail matters.
+
+⚠️ CONSISTENCY: Use the same level of detail, same structure, and same precision every time you analyze this image. Your analysis should be deterministic and reproducible.`;
 
   if (spaceType === "auto") {
     // Utiliser le prompt générique pour la détection automatique
@@ -646,123 +691,168 @@ export function getGenerationPrompt(
   const spaceSpecificInstructions = (spaceType: SpaceType): string => {
     switch (spaceType) {
       case "kitchen":
-        return `### KITCHEN-SPECIFIC PRESERVATION
-✓ Keep ALL appliances in exact same positions and models
-✓ Keep same cabinet layout, sizes, and styles
-✓ Keep same countertop material and pattern
-✓ Keep same backsplash pattern and colors
-✓ Keep same sink and faucet style
-✓ Keep same island/peninsula dimensions and position`;
+        return `### KITCHEN-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same kitchen layout (L-shaped/U-shaped/galley/island/open)
+✓ Keep ALL appliances in EXACT same positions, models, and orientations
+✓ Keep EXACT same cabinet layout, sizes, styles, and hardware positions
+✓ Keep EXACT same countertop material, color, pattern, and edge details
+✓ Keep EXACT same backsplash pattern, colors, tile size, and layout
+✓ Keep EXACT same sink type, material, position, and faucet style
+✓ Keep EXACT same island/peninsula dimensions, position, and materials
+✓ Keep EXACT same ventilation hood position and style
+✓ DO NOT change any appliance positions or styles
+✓ DO NOT change cabinet colors or styles (just clean them)`;
       case "bathroom":
-        return `### BATHROOM-SPECIFIC PRESERVATION
-✓ Keep ALL fixtures in exact same positions
-✓ Keep same tile patterns and layouts
-✓ Keep same vanity, sink, and faucet styles
-✓ Keep same shower/tub configuration
-✓ Keep same mirror and lighting positions`;
+        return `### BATHROOM-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same bathroom layout and dimensions
+✓ Keep ALL fixtures in EXACT same positions (sink, toilet, shower, tub)
+✓ Keep EXACT same tile patterns, layouts, grout lines, and colors
+✓ Keep EXACT same vanity position, size, style, and number of sinks
+✓ Keep EXACT same shower/tub configuration, dimensions, and door type
+✓ Keep EXACT same mirror size, style, position, and lighting
+✓ Keep EXACT same faucet styles, finishes, and positions
+✓ Keep EXACT same storage (medicine cabinet, shelves) positions
+✓ DO NOT change any fixture positions or styles`;
       case "outdoor":
-        return `### OUTDOOR-SPECIFIC PRESERVATION
-✓ Keep same flooring/decking material and pattern
-✓ Keep same railing/fence style and positions
-✓ Keep same furniture positions and styles
-✓ Keep same planters and permanent plants
-✓ Keep same structural elements (pergolas, etc.)
-✓ Preserve natural environment and views`;
+        return `### OUTDOOR-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same outdoor space layout and boundaries
+✓ Keep EXACT same flooring/decking material, pattern, and layout
+✓ Keep EXACT same railing/fence style, material, height, and positions
+✓ Keep EXACT same furniture positions, styles, and materials
+✓ Keep EXACT same planters and permanent plants (positions and types)
+✓ Keep EXACT same structural elements (pergolas, columns, etc.)
+✓ Preserve EXACT same natural environment, views, and surroundings
+✓ Keep EXACT same steps, level changes, and built-in features
+✓ DO NOT change outdoor structure or boundaries`;
       case "pool":
-        return `### POOL-SPECIFIC PRESERVATION (CRITICAL)
-✓ Keep EXACT same pool shape and dimensions (rectangular/oval/freeform/etc.)
-✓ Keep same pool edge/coping style, material, and color
-✓ Keep same decking material, pattern, and layout
-✓ Keep same pool features (steps positions, fountains, jets, waterfalls)
-✓ Keep same pool furniture positions and styles
-✓ Keep same pool equipment positions (skimmers, drains, lights, ladders)
-✓ Keep same pool bottom tile/liner pattern and colors
-✓ Keep same pool wall tile/liner pattern and colors
-✓ Preserve same water color tone (blue/turquoise) but make it crystal clear
-✓ Keep same reflections and lighting on water surface
-✓ Keep same surrounding landscape and views`;
+        return `### POOL-SPECIFIC PRESERVATION (CRITICAL - MOST IMPORTANT)
+✓ Keep EXACT same pool shape and dimensions (rectangular/oval/freeform/infinity/kidney/round)
+✓ Keep EXACT same pool edge/coping style, material, color, and width
+✓ Keep EXACT same decking material, pattern, layout, and grout lines
+✓ Keep EXACT same pool features (steps positions/width/number, ledges, benches)
+✓ Keep EXACT same water features (fountains, jets, waterfalls) positions and styles
+✓ Keep EXACT same pool furniture positions, styles, and materials
+✓ Keep EXACT same pool equipment positions (skimmers, drains, lights, ladders)
+✓ Keep EXACT same pool bottom tile/liner pattern, colors, and design
+✓ Keep EXACT same pool wall tile/liner pattern, colors, and design
+✓ Preserve EXACT same water color tone (blue/turquoise) - just make it crystal clear
+✓ Keep EXACT same reflections and lighting on water surface
+✓ Keep EXACT same surrounding landscape, views, and environment
+✓ DO NOT change pool shape, size, or any structural elements
+✓ DO NOT change water color (just clarity)`;
       case "balcony":
-        return `### BALCONY-SPECIFIC PRESERVATION
-✓ Keep same railing style and material
-✓ Keep same flooring material and pattern
-✓ Keep same furniture positions and styles
-✓ Keep same planters and plants
-✓ Preserve views and surrounding environment`;
+        return `### BALCONY-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same balcony dimensions, shape, and layout
+✓ Keep EXACT same railing style, material, height, and design
+✓ Keep EXACT same flooring material, pattern, and condition
+✓ Keep EXACT same furniture positions, styles, and materials
+✓ Keep EXACT same planters and plants (positions and types)
+✓ Preserve EXACT same views and surrounding environment
+✓ Keep EXACT same connection to building (door, windows)
+✓ DO NOT change balcony structure or boundaries`;
       case "garage":
-        return `### GARAGE-SPECIFIC PRESERVATION
-✓ Keep same storage systems and positions
-✓ Keep same workbench positions and styles
-✓ Keep same tools and equipment (if permanent)
-✓ Keep same floor material and finish
-✓ Keep same door and window positions`;
+        return `### GARAGE-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same garage dimensions and layout
+✓ Keep EXACT same storage systems and positions (shelves, cabinets)
+✓ Keep EXACT same workbench positions, sizes, and styles
+✓ Keep EXACT same tools and equipment positions (if permanent)
+✓ Keep EXACT same floor material, finish, and pattern
+✓ Keep EXACT same door and window positions and types
+✓ Keep EXACT same wall materials and colors
+✓ DO NOT change storage layout or equipment positions`;
       case "office":
-        return `### OFFICE-SPECIFIC PRESERVATION
-✓ Keep same desk position and style
-✓ Keep same storage systems (filing cabinets, shelves)
-✓ Keep same technology equipment positions
-✓ Keep same chair and furniture styles`;
+        return `### OFFICE-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same office layout and dimensions
+✓ Keep EXACT same desk position, size, style, and material
+✓ Keep EXACT same storage systems (filing cabinets, shelves) positions and styles
+✓ Keep EXACT same technology equipment positions (computers, monitors, printers)
+✓ Keep EXACT same chair and furniture styles, positions, and materials
+✓ Keep EXACT same window and door positions
+✓ DO NOT change desk or equipment positions`;
       case "bedroom":
-        return `### BEDROOM-SPECIFIC PRESERVATION
-✓ Keep same bed position, size, and style
-✓ Keep same furniture positions (nightstands, dresser)
-✓ Keep same window treatments
-✓ Keep same closet configuration`;
+        return `### BEDROOM-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same bedroom layout and dimensions
+✓ Keep EXACT same bed position, size, type, and style
+✓ Keep EXACT same furniture positions (nightstands, dresser, wardrobe)
+✓ Keep EXACT same window treatments (curtains, blinds) styles and positions
+✓ Keep EXACT same closet configuration and position
+✓ Keep EXACT same decorative items positions
+✓ DO NOT change bed or furniture positions`;
       case "living-room":
-        return `### LIVING ROOM-SPECIFIC PRESERVATION
-✓ Keep same seating arrangement and positions
-✓ Keep same furniture styles and materials
-✓ Keep same entertainment setup
-✓ Keep same fireplace (if present)`;
+        return `### LIVING ROOM-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same living room layout and dimensions
+✓ Keep EXACT same seating arrangement and positions (sofas, chairs)
+✓ Keep EXACT same furniture styles, materials, and colors
+✓ Keep EXACT same entertainment setup (TV, speakers) positions
+✓ Keep EXACT same tables (coffee, side) positions and styles
+✓ Keep EXACT same fireplace (if present) position, style, and materials
+✓ Keep EXACT same storage (shelves, cabinets) positions
+✓ DO NOT change seating arrangement or furniture positions`;
+      case "interior":
+        return `### INTERIOR-SPECIFIC PRESERVATION (CRITICAL)
+✓ Keep EXACT same room dimensions and layout
+✓ Keep EXACT same walls, windows, doors (positions AND sizes)
+✓ Keep EXACT same floor material and pattern (terrazzo, tile, wood, carpet, etc.)
+✓ Keep EXACT same grout lines pattern, width, and layout
+✓ Keep EXACT same architectural features (moldings, baseboards, etc.)
+✓ Keep EXACT same ceiling height and type
+✓ Keep EXACT same spatial relationships between all elements
+✓ DO NOT change any structural elements`;
       default:
-        return `### STRUCTURE (CANNOT CHANGE)
-✓ Exact same camera angle and perspective
-✓ Exact same room dimensions and layout
-✓ Exact same walls, windows, doors (positions AND sizes)
-✓ Exact same floor material and pattern (terrazzo, tile, wood, etc.)
-✓ Exact same grout lines pattern and layout
-✓ Exact same architectural features
-✓ Exact same spatial relationships between all elements`;
+        return `### STRUCTURE (CANNOT CHANGE - CRITICAL)
+✓ EXACT same camera angle and perspective
+✓ EXACT same room/space dimensions and layout
+✓ EXACT same walls, windows, doors (positions AND sizes)
+✓ EXACT same floor/ground material and pattern
+✓ EXACT same grout lines pattern, width, and layout
+✓ EXACT same architectural features and details
+✓ EXACT same spatial relationships between all elements
+✓ EXACT same built-in features and fixtures
+✓ DO NOT change any structural elements`;
     }
   };
 
   const spaceSpecificCleaning = (spaceType: SpaceType): string => {
     switch (spaceType) {
       case "kitchen":
-        return `→ Clean all countertops to spotless (same material, just pristine)
-→ Clean all appliances (refrigerator, stove, oven) - same models, just clean
-→ Clean all cabinets (same finish, just fresh)
-→ Clean backsplash (same pattern, just immaculate)
-→ Clean sink and faucet (same style, just polished)
-→ Clean floor (same pattern, just pristine)
-→ Remove all food debris, grease, stains`;
+        return `→ Clean all countertops to spotless (PRESERVE same material, color, pattern - just pristine)
+→ Clean all appliances (refrigerator, stove, oven, dishwasher) - PRESERVE same models, positions, colors - just clean
+→ Clean all cabinets (PRESERVE same finish, color, hardware - just fresh and polished)
+→ Clean backsplash (PRESERVE same pattern, colors, tile size - just immaculate)
+→ Clean sink and faucet (PRESERVE same style, material, position - just polished)
+→ Clean floor (PRESERVE same pattern, grout lines, material - just pristine)
+→ Remove all food debris, grease, stains, water marks
+→ Make all surfaces look professionally cleaned but PRESERVE all materials and colors`;
       case "bathroom":
-        return `→ Clean all tiles to spotless (same pattern, just pristine)
-→ Clean all fixtures (sink, faucet, shower, tub) - same styles, just polished
-→ Clean mirror (same size, just crystal clear)
-→ Clean countertop (same material, just immaculate)
-→ Clean floor (same pattern, just pristine)
-→ Remove all soap scum, water marks, mold, mildew`;
+        return `→ Clean all tiles to spotless (PRESERVE same pattern, colors, grout lines - just pristine)
+→ Clean all fixtures (sink, faucet, shower, tub, toilet) - PRESERVE same styles, positions, finishes - just polished
+→ Clean mirror (PRESERVE same size, style, position - just crystal clear)
+→ Clean countertop (PRESERVE same material, color, edge details - just immaculate)
+→ Clean floor (PRESERVE same pattern, grout, material - just pristine)
+→ Remove all soap scum, water marks, mold, mildew, stains
+→ Make all surfaces look professionally cleaned but PRESERVE all materials, colors, and patterns`;
       case "outdoor":
-        return `→ Clean all surfaces (decking, tiles, stone) - same materials, just pristine
-→ Clean all furniture (same styles, just fresh)
-→ Remove all leaves, debris, dirt
-→ Clean planters (same positions, just tidy)
-→ Remove stains and discoloration
-→ Make everything look freshly maintained`;
+        return `→ Clean all surfaces (decking, tiles, stone) - PRESERVE same materials, patterns, colors - just pristine
+→ Clean all furniture (PRESERVE same styles, positions, materials, colors - just fresh and clean)
+→ Remove all leaves, branches, debris, dirt, trash
+→ Clean planters (PRESERVE same positions, types, materials - just tidy)
+→ Remove all stains, discoloration, water marks, mold
+→ Make everything look freshly maintained but PRESERVE all materials and natural environment`;
       case "pool":
-        return `→ Make pool water CRYSTAL CLEAR - remove all algae (green/black/yellow), debris, leaves, scum, foam
-→ Water should be transparent and show the bottom tiles/liner clearly
-→ Keep same water color (blue/turquoise) but make it pristine and clear
-→ Clean pool bottom: remove all dirt, debris, algae from tiles/liner
-→ Clean pool walls: remove all algae, stains, dirt from tiles/liner
-→ Clean pool edges and coping (same material, just pristine, no stains)
-→ Clean decking (same pattern, just immaculate, no dirt or stains)
-→ Remove ALL floating debris, leaves, branches, insects from water
-→ Remove all algae growth (green slime, black spots, yellow stains)
-→ Clean pool furniture (same positions, just fresh and clean)
-→ Clean pool equipment (same positions, just maintained and clean)
+        return `→ Make pool water CRYSTAL CLEAR - remove ALL algae (green/black/yellow), debris, leaves, scum, foam
+→ Water MUST be transparent and show the bottom tiles/liner clearly and distinctly
+→ PRESERVE same water color tone (blue/turquoise) - just make it pristine and crystal clear
+→ Clean pool bottom: remove ALL dirt, debris, algae from tiles/liner (PRESERVE pattern and colors)
+→ Clean pool walls: remove ALL algae, stains, dirt from tiles/liner (PRESERVE pattern and colors)
+→ Clean pool edges and coping (PRESERVE same material, style, color - just pristine, no stains)
+→ Clean decking (PRESERVE same pattern, grout lines, material - just immaculate, no dirt or stains)
+→ Remove ALL floating debris, leaves, branches, insects, trash from water
+→ Remove ALL algae growth (green slime, black spots, yellow stains) completely
+→ Clean pool furniture (PRESERVE same positions, styles, materials - just fresh and clean)
+→ Clean pool equipment (PRESERVE same positions, types - just maintained and clean)
 → Remove any scum lines, water marks, or discoloration
-→ Pool should look professionally maintained and ready to swim`;
+→ Pool should look professionally maintained and ready to swim
+→ CRITICAL: Water clarity is the most important - it must be crystal clear while preserving pool structure`;
       case "balcony":
         return `→ Clean floor (same material, just pristine)
 → Clean railings (same material, just polished)
@@ -775,13 +865,20 @@ export function getGenerationPrompt(
 → Organize tools and equipment (same items, just organized)
 → Remove all dirt, oil stains, debris
 → Clean storage systems (same positions, just tidy)`;
+      case "interior":
+        return `→ Clean all floors to spotless (PRESERVE same material, pattern, grout lines - just pristine)
+→ Clean all walls (PRESERVE same color, texture, finish - just fresh and clean)
+→ Polish all surfaces to look well-maintained (PRESERVE same materials and finishes)
+→ Clean grout lines (PRESERVE same width, pattern - just bright and clean)
+→ Remove all water marks, stains, discoloration, dirt, dust
+→ Make everything look freshly cleaned but PRESERVE all materials, colors, and patterns`;
       default:
-        return `→ Make floor spotlessly clean (same pattern, just pristine)
-→ Clean all walls (same color, just fresh paint look)
-→ Polish surfaces to look well-maintained
-→ Clean grout lines (same width, just bright white/clean)
-→ Remove water marks, stains, and discoloration
-→ Make everything look freshly cleaned`;
+        return `→ Make floor spotlessly clean (PRESERVE same pattern, material, grout lines - just pristine)
+→ Clean all walls (PRESERVE same color, texture - just fresh paint look)
+→ Polish surfaces to look well-maintained (PRESERVE same materials and finishes)
+→ Clean grout lines (PRESERVE same width, pattern - just bright white/clean)
+→ Remove all water marks, stains, discoloration, dirt, dust
+→ Make everything look freshly cleaned but PRESERVE all materials, colors, and patterns`;
     }
   };
 
@@ -794,61 +891,127 @@ ${analysis}
 
 YOUR TASK: Transform this EXACT SAME SPACE into its clean version.
 
+⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
+
+⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.
+
 ## ABSOLUTE REQUIREMENTS - MUST PRESERVE 100%:
+
+### CAMERA & PERSPECTIVE (MUST BE IDENTICAL)
+
+✓ EXACT same camera angle and position
+✓ EXACT same perspective and vanishing points
+✓ EXACT same field of view and lens characteristics
+✓ EXACT same depth of field (what's in focus, what's blurred)
+✓ EXACT same composition and framing
+✓ EXACT same crop and aspect ratio
+
+### STRUCTURAL ELEMENTS (MUST BE IDENTICAL)
 
 ${spaceSpecificInstructions(spaceType)}
 
-### FURNITURE & OBJECTS (CANNOT CHANGE)
+### FURNITURE & OBJECTS (CANNOT CHANGE - EXACT POSITIONS)
 
-✓ Keep ALL furniture in EXACT same positions
-✓ Keep same furniture styles, colors, and materials
-✓ Keep same sizes and orientations
+✓ Keep ALL furniture in EXACT same positions (pixel-perfect if possible)
+✓ Keep same furniture styles, colors, materials, and textures
+✓ Keep same sizes, proportions, and orientations
 ✓ Keep same built-in elements and fixtures
-✓ Keep permanent decorative items
+✓ Keep permanent decorative items in exact same positions
 ✓ Keep pipes, hoses, drains, vents exactly as they are
-✓ Keep all permanent equipment and tools
+✓ Keep all permanent equipment and tools in same positions
+✓ DO NOT move, remove, or add any furniture
+✓ DO NOT change furniture colors or styles
 
-### LIGHTING & ATMOSPHERE (CANNOT CHANGE)
+### SURFACES & MATERIALS (PRESERVE PATTERNS, CLEAN ONLY)
 
-✓ Same natural light direction and intensity
-✓ Same shadows and their directions
-✓ Same color temperature of light
-✓ Same overall brightness level
-✓ Same photographic mood
-✓ Same time of day appearance
+✓ Keep EXACT same floor/ground material and pattern
+✓ Keep EXACT same tile patterns, grout lines, and layouts
+✓ Keep EXACT same wall materials, colors, and textures
+✓ Keep EXACT same surface finishes and materials
+✓ Only remove dirt, stains, and discoloration - DO NOT change materials
+✓ Preserve all patterns, textures, and decorative elements
+
+### LIGHTING & ATMOSPHERE (MUST BE IDENTICAL)
+
+✓ EXACT same natural light direction and intensity
+✓ EXACT same shadows (positions, lengths, directions, softness)
+✓ EXACT same color temperature of light (warm/cool)
+✓ EXACT same overall brightness level
+✓ EXACT same photographic mood and atmosphere
+✓ EXACT same time of day appearance
+✓ EXACT same reflections and highlights on surfaces
+✓ DO NOT change lighting conditions or add new light sources
+
+### COLORS & PALETTE (PRESERVE, ENHANCE CLEANLINESS ONLY)
+
+✓ Keep EXACT same color palette and color relationships
+✓ Keep same dominant, secondary, and accent colors
+✓ Only make colors appear "fresh" and "clean" - DO NOT change hues
+✓ Preserve same saturation levels (unless cleaning naturally enhances them)
+✓ Keep same warm/cool tone balance
 
 ## WHAT TO CHANGE (ONLY THIS - NOTHING ELSE):
 
-### REMOVE ALL CLUTTER
+### REMOVE ALL CLUTTER (BE THOROUGH)
 
-✗ Remove all items from "CLUTTER & MESS" section
-✗ Remove dirty dishes, scattered clothes, trash
-✗ Remove stains, dirt, grime, mold, mildew
+✗ Remove ALL items from "CLUTTER & MESS" section of analysis
+✗ Remove dirty dishes, scattered clothes, trash, debris
+✗ Remove stains, dirt, grime, mold, mildew from ALL surfaces
 ✗ Clear surfaces of disorganized items
-✗ Remove any temporary mess
-✗ Remove leaves, debris (for outdoor/pool spaces)
-✗ Remove algae, pool debris (for pool areas)
+✗ Remove any temporary mess or clutter
+✗ Remove leaves, branches, debris (for outdoor/pool spaces)
+✗ Remove algae, pool debris, floating objects (for pool areas)
+✗ Remove all visible dirt, dust, and grime accumulation
 
-### CLEAN ALL SURFACES
+### CLEAN ALL SURFACES (MAKE PRISTINE, PRESERVE MATERIALS)
 
 ${spaceSpecificCleaning(spaceType)}
 
-### ORGANIZE PRESERVED ITEMS
+### ORGANIZE PRESERVED ITEMS (IF THEY MUST STAY)
 
-→ Items from "ELEMENTS TO PRESERVE" stay but look organized
-→ Coil hoses neatly if they must stay
-→ Align items properly
+→ Items from "ELEMENTS TO PRESERVE" stay but look organized and clean
+→ Coil hoses neatly if they must stay (same position, just organized)
+→ Align items properly (same items, just aligned)
 → Organize tools and equipment (if they belong in the space)
+→ Make preserved items look intentional and well-maintained
+
+## CRITICAL EDITING RULES (FOLLOW STRICTLY FOR CONSISTENCY):
+
+1. PRESERVE STRUCTURE: The space must be RECOGNIZABLY the same space - IDENTICAL layout
+2. PRESERVE PERSPECTIVE: Camera angle and composition must be IDENTICAL - no changes
+3. PRESERVE MATERIALS: Same materials, just clean (tiles stay tiles, wood stays wood) - NO material changes
+4. PRESERVE COLORS: Same color palette, just fresh and clean - NO color hue changes
+5. PRESERVE LIGHTING: Same lighting conditions and shadows - IDENTICAL lighting
+6. PRESERVE FURNITURE: All furniture in EXACT same positions - NO movement
+7. ONLY CLEAN: Remove mess, dirt, stains - nothing else - NO additions or removals of permanent items
+8. BE CONSISTENT: Apply the same cleaning transformations in the same way every time for the same image
 
 ## QUALITY REQUIREMENTS:
 
-- Photorealistic quality (looks like a real photograph)
-- Natural, believable result (not artificial or fake)
-- Professional cleaning service standard
-- Same photographic characteristics (grain, sharpness, exposure)
-- No cartoon, illustration, or 3D render look
+- Photorealistic quality (looks like a real photograph, not AI-generated)
+- Natural, believable result (not artificial, fake, or oversaturated)
+- Professional cleaning service standard (thorough but realistic)
+- Same photographic characteristics (grain, sharpness, exposure, color grading)
+- No cartoon, illustration, 3D render, or AI-artifact look
+- Seamless editing (no visible seams, artifacts, or inconsistencies)
 
-Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished."`,
+## FINAL CHECK (VERIFY ALL BEFORE FINALIZING):
+
+Before finalizing, verify EVERY item:
+✓ EXACT same camera angle and perspective (no changes)
+✓ EXACT same room/space layout and dimensions (identical)
+✓ EXACT same furniture positions and styles (no movement, no style changes)
+✓ EXACT same materials and patterns (just clean, no material changes)
+✓ EXACT same lighting and shadows (identical conditions)
+✓ EXACT same color palette (just fresh, no hue changes)
+✓ ALL clutter removed (thorough cleaning)
+✓ ALL surfaces clean (spotless)
+✓ Result is RECOGNIZABLY the SAME space, professionally cleaned
+✓ Result would be IDENTICAL if processed again with same input
+
+⚠️ CONSISTENCY CHECK: If you process this same image again, you MUST produce the EXACT same result.
+
+Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`,
 
     marketing: `YOU ARE ENHANCING AN EXISTING IMAGE FOR MARKETING.
 
@@ -858,29 +1021,31 @@ ${analysis}
 
 YOUR TASK: Transform this EXACT SAME SPACE into a magazine-worthy version.
 
-## MUST PRESERVE (RECOGNIZABLE):
+⚠️ CRITICAL: This is IMAGE ENHANCEMENT, not recreation. The space must be RECOGNIZABLY the same space.
 
-### CORE STRUCTURE (95% IDENTICAL)
+## MUST PRESERVE (RECOGNIZABLE - 95% IDENTICAL):
 
-✓ Same camera angle and perspective
-✓ Same room/space layout and architecture
-✓ Same windows, doors, walls positions (if applicable)
-✓ Same floor/ground material and general pattern
-✓ Same spatial configuration
-${spaceType === "pool" ? "✓ Same pool shape and dimensions" : ""}
+### CORE STRUCTURE (MUST BE IDENTICAL)
+
+✓ EXACT same camera angle and perspective
+✓ EXACT same room/space layout and architecture
+✓ EXACT same windows, doors, walls positions (if applicable)
+✓ EXACT same floor/ground material and pattern
+✓ EXACT same spatial configuration and dimensions
+${spaceType === "pool" ? "✓ EXACT same pool shape and dimensions" : ""}
 ${
   spaceType === "outdoor" || spaceType === "balcony"
-    ? "✓ Same outdoor structure and boundaries"
+    ? "✓ EXACT same outdoor structure and boundaries"
     : ""
 }
 
 ### MAIN ELEMENTS (KEEP RECOGNIZABLE)
 
-✓ Same furniture pieces (styling can be enhanced)
+✓ Same furniture pieces (positions and styles - can enhance appearance but not change)
 ✓ Same overall design aesthetic and style
-✓ Same color scheme (can be enhanced/vibrant)
-✓ Same architectural character
-✓ Same key fixtures and equipment
+✓ Same color scheme (can enhance vibrancy but preserve hues)
+✓ Same architectural character and features
+✓ Same key fixtures and equipment positions
 
 ## WHAT TO ENHANCE:
 

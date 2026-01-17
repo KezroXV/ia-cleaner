@@ -93,7 +93,7 @@ export async function uploadToCloudinary(
 
 /**
  * Génère une URL Cloudinary optimisée pour l'affichage
- * Utilise des transformations pour réduire la taille et améliorer les performances
+ * Utilise la résolution réelle de l'image si width est fourni, sinon retourne l'URL originale
  */
 export function getOptimizedImageUrl(
   originalUrl: string,
@@ -108,8 +108,8 @@ export function getOptimizedImageUrl(
   }
 
   const {
-    width = 1200,
-    quality = "auto:good",
+    width,
+    quality = "auto:best",
     format = "auto",
   } = options;
 
@@ -118,15 +118,24 @@ export function getOptimizedImageUrl(
     const parts = originalUrl.split("/image/upload/");
     if (parts.length === 2) {
       const [base, rest] = parts;
+      
       // Construire les transformations
-      const transformations = [
-        `w_${width}`,
-        `c_limit`, // Limite la taille sans recadrer
-        `q_${quality}`,
-        `f_${format}`,
-      ].join(",");
+      const transformations: string[] = [];
+      
+      // Ajouter la largeur seulement si elle est spécifiée (résolution réelle)
+      if (width !== undefined) {
+        transformations.push(`w_${width}`);
+        transformations.push(`c_limit`); // Limite la taille sans recadrer
+      }
+      
+      // Ajouter qualité et format pour optimisation
+      transformations.push(`q_${quality}`);
+      transformations.push(`f_${format}`);
 
-      return `${base}/image/upload/${transformations}/${rest}`;
+      // Si on a des transformations, les appliquer
+      if (transformations.length > 0) {
+        return `${base}/image/upload/${transformations.join(",")}/${rest}`;
+      }
     }
   }
 

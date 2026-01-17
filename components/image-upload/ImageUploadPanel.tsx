@@ -75,11 +75,11 @@ export function ImageUploadPanel({
       />
 
       {preview ? (
-        <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden">
+        <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden flex items-center justify-center bg-gray-50">
           <img
             src={preview}
             alt="Preview"
-            className="w-full h-full object-cover"
+            className="max-w-full max-h-full w-auto h-auto object-contain"
           />
         </div>
       ) : (

@@ -95,10 +95,10 @@ export async function POST(request: NextRequest) {
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`✅ Succès en ${duration}s`);
 
-    // 9. Générer une URL optimisée pour l'affichage
+    // 9. Générer une URL avec la résolution réelle de l'image
     const optimizedUrl = getOptimizedImageUrl(uploadResult.secure_url, {
-      width: Math.min(uploadResult.width, 1200), // Limiter à 1200px max
-      quality: "auto:good",
+      width: uploadResult.width, // Utiliser la résolution réelle
+      quality: "auto:best", // Meilleure qualité pour préserver les détails
       format: "auto", // WebP ou AVIF selon le navigateur
     });
 

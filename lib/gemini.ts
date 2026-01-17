@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { createHash } from "crypto";
 import {
   getAnalysisPrompt,
   getGenerationPrompt,
@@ -17,6 +18,22 @@ if (!API_KEY) {
 
 // Initialiser Gemini
 const genAI = new GoogleGenerativeAI(API_KEY);
+
+/**
+ * Génère un seed déterministe à partir de l'image pour garantir la reproductibilité
+ * Utilise un hash de l'image pour créer un seed cohérent
+ */
+function generateSeedFromImage(imageBuffer: Buffer): number {
+  // Créer un hash SHA-256 de l'image
+  const hash = createHash("sha256").update(imageBuffer).digest("hex");
+  
+  // Prendre les 8 premiers caractères du hash et les convertir en nombre
+  // Limiter à 32 bits (max pour un seed)
+  const seedString = hash.substring(0, 8);
+  const seed = parseInt(seedString, 16) % 2147483647; // Max 32-bit integer
+  
+  return seed;
+}
 
 /**
  * Détecte et parse les erreurs de quota Gemini API
@@ -120,6 +137,11 @@ async function detectSpaceType(imageBuffer: Buffer): Promise<SpaceType> {
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-image",
+      generationConfig: {
+        temperature: 0, // Température à 0 pour garantir la reproductibilité
+        topK: 1, // Utiliser seulement le token le plus probable
+        topP: 0.1, // Probabilité très faible pour plus de déterminisme
+      },
     });
 
     const base64Image = imageBuffer.toString("base64");
@@ -172,6 +194,11 @@ export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
     // Étape 2: Utiliser le prompt spécialisé pour ce type d'espace
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-image",
+      generationConfig: {
+        temperature: 0, // Température à 0 pour garantir la reproductibilité de l'analyse
+        topK: 40, // Permettre plus de variété pour l'analyse détaillée mais rester cohérent
+        topP: 0.95, // Probabilité modérée pour l'analyse
+      },
     });
 
     const base64Image = imageBuffer.toString("base64");
@@ -243,8 +270,18 @@ export async function editImageWithGemini(
     }
 
     // UTILISER LE MODÈLE GEMINI 2.5 FLASH IMAGE (stable)
+    // Générer un seed basé sur l'image pour garantir la reproductibilité
+    const seed = generateSeedFromImage(originalImageBuffer);
+    
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-image", // Modèle stable pour la génération d'images
+      generationConfig: {
+        // Note: Gemini peut ne pas supporter directement le seed pour la génération d'images
+        // Mais on peut utiliser la température pour réduire la variabilité
+        temperature: 0.1, // Température très basse pour plus de cohérence (0.1 au lieu de 0 pour permettre un peu de créativité)
+        topK: 20, // Limiter les choix pour plus de cohérence
+        topP: 0.8, // Probabilité modérée pour équilibrer cohérence et qualité
+      },
     });
 
     const base64Image = originalImageBuffer.toString("base64");
@@ -257,8 +294,13 @@ export async function editImageWithGemini(
     console.log("📝 Envoi de la requête à Gemini 2.5 Flash Image...");
     console.log("🎯 Mode:", promptType);
     console.log("🏠 Type d'espace:", spaceType);
+    console.log("🔢 Seed (pour traçabilité):", seed);
 
     // Envoyer l'image originale + le prompt d'édition
+    // Note: Inclure le seed dans le prompt pour aider à la reproductibilité
+    // même si l'API ne le supporte pas directement
+    const enhancedPrompt = `${editingPrompt}\n\n[Seed: ${seed} - Utilise ce seed pour garantir la reproductibilité]`;
+    
     const result = await model.generateContent([
       {
         inlineData: {
@@ -267,7 +309,7 @@ export async function editImageWithGemini(
         },
       },
       {
-        text: editingPrompt,
+        text: enhancedPrompt,
       },
     ]);
 

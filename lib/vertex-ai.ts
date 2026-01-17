@@ -1,6 +1,7 @@
 import { VertexAI } from "@google-cloud/vertexai";
 import { GoogleAuth } from "google-auth-library";
 import fetch from "node-fetch";
+import { createHash } from "crypto";
 import { 
   getAnalysisPrompt, 
   getGenerationPrompt, 
@@ -44,6 +45,22 @@ function getAuth(): GoogleAuth {
     });
   }
   return authInstance;
+}
+
+/**
+ * Génère un seed déterministe à partir de l'image pour garantir la reproductibilité
+ * Utilise un hash de l'image pour créer un seed cohérent
+ */
+function generateSeedFromImage(imageBuffer: Buffer): number {
+  // Créer un hash SHA-256 de l'image
+  const hash = createHash("sha256").update(imageBuffer).digest("hex");
+  
+  // Prendre les 8 premiers caractères du hash et les convertir en nombre
+  // Limiter à 32 bits (max pour un seed)
+  const seedString = hash.substring(0, 8);
+  const seed = parseInt(seedString, 16) % 2147483647; // Max 32-bit integer
+  
+  return seed;
 }
 
 /**
@@ -213,7 +230,8 @@ export async function generateCleanImage(
       };
       // Ajouter un paramètre de force pour l'édition d'image
       // Plus la valeur est élevée, plus l'image générée ressemble à l'originale
-      instance.imageEditingStrength = 0.7; // 0.0 = nouvelle image, 1.0 = très proche de l'original
+      // Augmenté à 0.85 pour garantir une meilleure consistance et fidélité à l'original
+      instance.imageEditingStrength = 0.85; // 0.0 = nouvelle image, 1.0 = très proche de l'original
     }
 
     const requestBody = {
@@ -225,9 +243,10 @@ export async function generateCleanImage(
           "blurry, low quality, distorted, unrealistic, cartoonish, anime, drawing, painting, rendered, artificial, fake, oversaturated, overexposed",
         safetyFilterLevel: "block_some",
         personGeneration: "dont_allow",
-        // Paramètres améliorés pour une meilleure qualité (style Nano Banana)
-        guidanceScale: 7.5, // Contrôle la fidélité au prompt (plus élevé = plus fidèle)
-        seed: undefined, // Peut être défini pour la reproductibilité
+        // Paramètres améliorés pour une meilleure qualité et consistance
+        guidanceScale: 8.0, // Contrôle la fidélité au prompt (plus élevé = plus fidèle, augmenté pour consistance)
+        // Seed basé sur un hash de l'image pour garantir la reproductibilité
+        seed: originalImageBuffer ? generateSeedFromImage(originalImageBuffer) : undefined,
       },
     };
 

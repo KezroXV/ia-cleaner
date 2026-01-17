@@ -68,14 +68,14 @@ export function ImageResultPanel({
       )}
     >
       {result ? (
-        <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden">
+        <div className="relative w-full h-full min-h-[500px] rounded-2xl overflow-hidden flex items-center justify-center bg-gray-50">
           {imageLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
               <Loader2 className="h-12 w-12 text-yellow-400 animate-spin" />
             </div>
           )}
           {imageError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
               <p className="text-gray-500">Erreur de chargement de l'image</p>
             </div>
           ) : (
@@ -84,7 +84,7 @@ export function ImageResultPanel({
               alt="Résultat"
               fill
               className={cn(
-                "object-cover transition-opacity duration-300",
+                "object-contain transition-opacity duration-300",
                 imageLoading ? "opacity-0" : "opacity-100"
               )}
               onLoad={() => setImageLoading(false)}
