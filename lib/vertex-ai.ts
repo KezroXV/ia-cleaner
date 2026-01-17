@@ -1,7 +1,14 @@
 import { VertexAI } from "@google-cloud/vertexai";
 import { GoogleAuth } from "google-auth-library";
 import fetch from "node-fetch";
-import { getAnalysisPrompt, getGenerationPrompt, PromptType } from "./prompts";
+import { 
+  getAnalysisPrompt, 
+  getGenerationPrompt, 
+  getSpaceTypeDetectionPrompt,
+  normalizeSpaceType,
+  PromptType,
+  SpaceType 
+} from "./prompts";
 
 // Configuration - Lazy loading pour permettre le chargement des variables d'environnement
 function getProjectId(): string {
@@ -40,12 +47,11 @@ function getAuth(): GoogleAuth {
 }
 
 /**
- * Analyse une image avec Gemini Vision
- * Retourne une description détaillée de la pièce en désordre
+ * Détecte le type d'espace dans l'image
  */
-export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
+async function detectSpaceType(imageBuffer: Buffer): Promise<SpaceType> {
   try {
-    console.log("🔍 Analyse de l'image avec Gemini Vision...");
+    console.log("🔎 Détection du type d'espace...");
 
     const vertexAI = getVertexAI();
     const model = vertexAI.preview.getGenerativeModel({
@@ -53,7 +59,68 @@ export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
     });
 
     const base64Image = imageBuffer.toString("base64");
-    const prompt = getAnalysisPrompt();
+    const detectionPrompt = getSpaceTypeDetectionPrompt();
+
+    const request = {
+      contents: [
+        {
+          role: "user",
+          parts: [
+            {
+              inlineData: {
+                mimeType: "image/jpeg",
+                data: base64Image,
+              },
+            },
+            {
+              text: detectionPrompt,
+            },
+          ],
+        },
+      ],
+    };
+
+    const response = await model.generateContent(request);
+    const detectionText =
+      response.response.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+
+    if (!detectionText) {
+      console.log("⚠️ Aucune détection retournée, utilisation du mode auto");
+      return "auto";
+    }
+
+    const spaceType = normalizeSpaceType(detectionText);
+    console.log(`✅ Type d'espace détecté: ${spaceType}`);
+    return spaceType;
+  } catch (error) {
+    console.error("⚠️ Erreur lors de la détection du type d'espace:", error);
+    console.log("⚠️ Utilisation du mode auto par défaut");
+    return "auto";
+  }
+}
+
+/**
+ * Analyse une image avec Gemini Vision
+ * Retourne une description détaillée de la pièce en désordre
+ * Détecte automatiquement le type d'espace pour utiliser les prompts spécialisés
+ */
+export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
+  try {
+    console.log("🔍 Analyse de l'image avec Gemini Vision...");
+
+    // Étape 1: Détecter le type d'espace
+    const spaceType = await detectSpaceType(imageBuffer);
+
+    // Étape 2: Utiliser le prompt spécialisé pour ce type d'espace
+    const vertexAI = getVertexAI();
+    const model = vertexAI.preview.getGenerativeModel({
+      model: "gemini-2.0-flash-exp",
+    });
+
+    const base64Image = imageBuffer.toString("base64");
+    const prompt = getAnalysisPrompt(spaceType);
+
+    console.log(`📋 Utilisation du prompt spécialisé pour: ${spaceType}`);
 
     const request = {
       contents: [
@@ -100,7 +167,8 @@ export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
 export async function generateCleanImage(
   analysis: string,
   promptType: PromptType = "realistic",
-  originalImageBuffer?: Buffer
+  originalImageBuffer?: Buffer,
+  spaceType: SpaceType = "auto"
 ): Promise<Buffer> {
   try {
     console.log("🎨 Génération de l'image avec Imagen 3...");
@@ -108,7 +176,13 @@ export async function generateCleanImage(
       console.log("📸 Utilisation de l'image originale comme référence (mode image-to-image)");
     }
 
-    const generationPrompt = getGenerationPrompt(promptType, analysis);
+    // Si le type d'espace n'est pas fourni et qu'on a l'image, le détecter
+    if (spaceType === "auto" && originalImageBuffer) {
+      spaceType = await detectSpaceType(originalImageBuffer);
+    }
+
+    const generationPrompt = getGenerationPrompt(promptType, analysis, spaceType);
+    console.log(`🏠 Type d'espace utilisé: ${spaceType}`);
 
     // URL de l'API Imagen 3
     const projectId = getProjectId();
@@ -239,22 +313,31 @@ export async function generateCleanImage(
 /**
  * Flux complet: Analyse + Génération
  * Utilise l'image originale comme référence pour préserver la structure (comme Nano Banana)
+ * Détecte automatiquement le type d'espace pour optimiser le traitement
  */
 export async function processImageTransformation(
   imageBuffer: Buffer,
   promptType: PromptType = "realistic"
 ): Promise<{ generatedImage: Buffer; analysis: string }> {
+  // Étape 0: Détecter le type d'espace une seule fois
+  console.log("🔎 Étape 0/3: Détection du type d'espace...");
+  const spaceType = await detectSpaceType(imageBuffer);
+
   // Étape 1: Analyser l'image avec Gemini Vision pour obtenir une description détaillée
+  console.log("📊 Étape 1/3: Analyse de l'image originale...");
   const analysis = await analyzeMessyRoom(imageBuffer);
 
   // Étape 2: Générer l'image nettoyée en utilisant l'image originale comme référence
   // Cela permet de préserver la structure exacte de la pièce (comme Nano Banana)
+  console.log("🎨 Étape 2/3: Génération de l'image nettoyée...");
   const generatedImage = await generateCleanImage(
     analysis,
     promptType,
-    imageBuffer // Passer l'image originale comme référence
+    imageBuffer, // Passer l'image originale comme référence
+    spaceType // Utiliser le type détecté
   );
 
+  console.log("✅ Transformation complétée");
   return { generatedImage, analysis };
 }
 
