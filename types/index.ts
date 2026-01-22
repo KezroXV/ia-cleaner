@@ -11,6 +11,8 @@ export interface CleanImageResponse {
     height: number;
     format: string;
     analysisText?: string;
+    spaceType?: string; // Type d'espace détecté (car/sofa/general)
+    renderMode?: string; // Mode de rendu utilisé
   };
   error?: string;
   details?: string;

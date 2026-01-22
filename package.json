@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:gemini": "tsx scripts/test-gemini-editing.ts",
-    "test:nano": "tsx scripts/test-nano-banana.ts"
+    "test:nano": "tsx scripts/test-nano-banana.ts",
+    "test:specialized": "tsx scripts/test-specialized-systems.ts"
   },
   "dependencies": {
     "@google-cloud/vertexai": "^1.10.0",
@@ -25,6 +26,7 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.8.0",
     "clsx": "^2.1.1",
+    "form-data": "^4.0.1",
     "formidable": "^3.5.4",
     "google-auth-library": "^10.5.0",
     "lucide-react": "^0.562.0",
@@ -39,6 +41,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/form-data": "^2.5.0",
     "@types/formidable": "^3.4.6",
     "@types/node": "^20",
     "@types/node-fetch": "^2.6.13",

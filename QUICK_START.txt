@@ -1,0 +1,60 @@
+═══════════════════════════════════════════════════════════
+  QUICK START - IA CLEANER SYSTÈMES SPÉCIALISÉS
+═══════════════════════════════════════════════════════════
+
+🚀 INSTALLATION
+───────────────────────────────────────────────────────────
+npm install
+echo "GOOGLE_GEMINI_API_KEY=votre_cle" > .env.local
+npm run dev
+
+🚗 TESTS VOITURE
+───────────────────────────────────────────────────────────
+npm run test:specialized car ./test.jpg perfect-clean
+npm run test:specialized car ./test.jpg enhanced-beauty
+npm run test:specialized car ./test.jpg stylized-luxury
+
+🛋️ TESTS CANAPÉ
+───────────────────────────────────────────────────────────
+npm run test:specialized sofa ./test.jpg professional-clean
+npm run test:specialized sofa ./test.jpg magazine-worthy
+npm run test:specialized sofa ./test.jpg designer-dream
+
+📡 CURL VOITURE
+───────────────────────────────────────────────────────────
+curl -X POST http://localhost:3000/api/clean-car \
+  -F "image=@./test.jpg" \
+  -F "renderMode=perfect-clean"
+
+📡 CURL CANAPÉ
+───────────────────────────────────────────────────────────
+curl -X POST http://localhost:3000/api/clean-sofa \
+  -F "image=@./test.jpg" \
+  -F "renderMode=professional-clean"
+
+🎨 MODES VOITURE
+───────────────────────────────────────────────────────────
+perfect-clean      → 92% fidélité → Avant/après
+enhanced-beauty    → 85% fidélité → Marketing
+stylized-luxury    → 70% fidélité → Social media
+
+🎨 MODES CANAPÉ
+───────────────────────────────────────────────────────────
+professional-clean → 95% fidélité → Nettoyage pro
+magazine-worthy    → 85% fidélité → Magazines
+designer-dream     → 70% fidélité → Pinterest
+
+📚 DOCUMENTATION
+───────────────────────────────────────────────────────────
+README_SYSTEMES.md         → Vue d'ensemble
+COMMANDES_RAPIDES.md       → Référence complète
+GUIDE_UTILISATION.md       → Guide utilisateur
+INDEX_DOCUMENTATION.md     → Navigation
+
+🔧 VÉRIFICATION
+───────────────────────────────────────────────────────────
+npx tsc --noEmit          → Vérifier TypeScript
+npm run dev               → Démarrer serveur
+curl http://localhost:3000 → Tester serveur
+
+═══════════════════════════════════════════════════════════
