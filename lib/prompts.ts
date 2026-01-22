@@ -118,7 +118,6 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
     "livingroomfull": "living-room-full",
     armchair: "armchair",
     "arm chair": "armchair",
-    "armchair": "armchair",
   };
 
   // Vérifier les correspondances exactes
@@ -1652,147 +1651,6 @@ List items that should STAY exactly as they are. For EACH item, specify:
 - Decor items (EXACT positions PRESERVE)
 
 ⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
-
-    "armchair": `## 2. ARMCHAIR STRUCTURE & DESIGN (CRITICAL)
-
-### Armchair Type & Configuration:
-- Armchair style: wingback / recliner / accent / swivel / club / modern / traditional
-- Armchair size: small / medium / large / oversized
-- Back style: high back / low back / no back / adjustable
-- Arm design: rolled / straight / low / high / wingback
-- Legs: visible / hidden / metal / wood / upholstered / height
-- Cushion type: down-filled / foam / memory foam / combination / firm / soft
-- Back cushion: attached / removable / none
-- Throw pillow: present / absent / color / material / position
-- Throw blanket: present / folded / draped / color / material / texture
-- Armchair condition baseline: new / slightly worn / heavily worn / damaged areas
-
-### Armchair Placement:
-- Room positioning: against wall / floating / in corner / next to window
-- Distance from walls: exact measurements
-- Orientation: facing forward / angled / rotated
-- Relationship to other furniture: distance to side table / lamp / other seating
-
-## 3. ARMCHAIR MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
-
-### Upholstery Material:
-- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
-- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
-- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
-- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
-- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
-- Fabric finish: matte / glossy / satin / brushed
-- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
-- Stitching details: color, pattern, density, visible seams
-- Piping or trim: color, material, style, locations
-- Embellishments: buttons, tufting, nailhead trim, other decorative details
-
-### Cushions & Pillows:
-- Seat cushion: material, fill, color, pattern, firmness
-- Back cushion: material, fill, color, pattern, firmness (if present)
-- Throw pillow: color, pattern, size, texture, material, exact position (if present)
-
-### Other Elements:
-- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape (if present)
-- Piping color and material: contrasting / matching / metallic
-- Nail heads (if applicable): color, spacing, overall aesthetic impact
-
-⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
-
-## 4. ARMCHAIR CLEANLINESS BASELINE (DETAILED ASSESSMENT)
-
-Document the CURRENT state of armchair before cleaning:
-- Overall armchair appearance: pristine / clean / slightly soiled / heavily soiled / very dirty
-- Visible stains: locations, types (food / drink / dirt / pet / unknown), size, darkness level
-- Dust and dirt: general accumulation level, where concentrated
-- Pilling: fabric pilling level (none / light / moderate / heavy)
-- Odor indicators (if visible): freshness / staleness indication
-- Pet hair: presence level (none / light / moderate / heavy), distribution
-- Wrinkles and creases: natural from sitting / extra wrinkled / pressed appearance
-- Color vibrancy: bright / slightly faded / significantly faded / discolored
-- Shine level: matte / slightly shiny / very shiny (sweat marks)
-- Overall maintenance level: well-maintained / neglected / mixed
-
-## 5. ROOM CONTEXT
-
-If visible in the image:
-- Wall color and finish
-- Floor type and color
-- Other furniture: side table, lamp, other seating, etc.
-- Decor items: artwork, mirrors, plants, rugs
-- Windows: visible / curtains / blinds / natural light amount
-- Room size impression: small / medium / large / spacious
-- Design style: modern / traditional / eclectic / minimalist / rustic / contemporary
-- Color scheme: warm / cool / neutral / multi-colored
-
-## 6. LIGHTING & ATMOSPHERE (CRITICAL)
-
-- Primary light source: natural (windows / daylight) / artificial (overhead lights / lamps) / combination
-- Light direction and angle: warm afternoon sun / cool morning light / harsh midday / soft artificial
-- Shadows on armchair: shadow positions, lengths, softness, what casts them
-- Reflections: on armchair surface, in room windows or mirrors
-- Overall brightness: bright / medium / dim / moody
-- Color temperature: warm (yellowish) / cool (bluish) / neutral
-- Time of day impression (if applicable): morning / afternoon / evening
-- Mood created by lighting: energetic / cozy / dramatic / neutral
-- Any glare or hotspots on fabric
-
-## 7. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
-
-- Armchair primary color: exact shade and undertone [warm / cool / neutral]
-- Armchair secondary colors (if patterned): all colors in pattern and approximate percentages
-- Throw pillow color: exact shade (if present)
-- Throw blanket color: exact shade (if present)
-- Room wall colors: if visible
-- Floor color: if visible
-- Other furniture colors: if visible
-- Accent colors: metallics, trim, piping colors
-- Overall color harmony: monochromatic / complementary / analogous / triadic
-- Warm vs cool balance of entire scene
-- Saturation levels: vibrant / muted / neutral / washed out
-- Any color fading or discoloration patterns
-
-⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
-
-## 8. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
-
-List ALL items that make the armchair/room messy. For EACH item, specify:
-- Item type and description
-- EXACT location on armchair or in room
-- Size and quantity
-- Condition (dirty, sticky, wrinkled, scattered, etc.)
-
-**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
-- Food debris on cushions
-- Beverage spills or stains
-- Crumbs scattered on fabric
-- Sticky residue from spills
-- Dirt and dust accumulation
-- Pet hair and dander
-- Pilling and fabric wear
-- Visible wrinkles and creases
-- Stains of unknown origin
-- Clutter on armchair surface
-- Room clutter affecting presentation
-
-⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
-
-## 9. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
-
-List items that should STAY exactly as they are. For EACH item, specify:
-- Item type and description
-- EXACT position and arrangement
-- Size, color, style, and material
-- Why it should stay
-
-**Specific examples - PRESERVE THESE**:
-- Armchair structure and fabric (PRESERVE - just clean)
-- Cushion structure (PRESERVE - just clean)
-- Throw pillow and blanket (PRESERVE - just clean)
-- Room furniture positions (EXACT positions PRESERVE)
-- Decor items (EXACT positions PRESERVE)
-
-⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
   };
 
   const commonSections = `## 6. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
@@ -2113,34 +1971,42 @@ export function getGenerationPrompt(
       case "car-seats":
       case "car-dashboard":
       case "car-trunk":
-        return `### CAR-SPECIFIC PRESERVATION (CRITICAL - MOST IMPORTANT)
-✓ Keep EXACT same steering wheel angle, size, design, material, color
-✓ Keep EXACT same dashboard layout, shape, and all fixture positions
-✓ Keep EXACT same seat positions, recline angles, and orientations
-✓ Keep EXACT same seating arrangement (front/rear, bucket/bench)
-✓ Keep EXACT same color scheme of ALL interior elements
-✓ Keep EXACT same material types for seats, dashboard, panels (leather/fabric/plastic textures)
-✓ Keep EXACT same floor mat position, color, pattern, and material
-✓ Keep EXACT same headliner color and material
-✓ Keep EXACT same door panel layout and design
-✓ Keep EXACT same air vent positions and orientations
-✓ Keep EXACT same all dashboard features (buttons, screen, vents, cubbies)
-✓ Keep EXACT same center console layout and storage positions
-✓ Keep EXACT same rearview mirror and side mirror angles
-✓ Keep EXACT same all seat belt positions and routing
-✓ Keep EXACT same armrest positions and states
-✓ Keep EXACT same window tint level (clear/lightly/heavily tinted)
-✓ Keep EXACT same exterior view through windows (background preservation)
-✓ Keep EXACT same natural light direction from windows
-✓ Keep EXACT same interior ambient lighting state (on/off/color)
-✓ Keep EXACT same gear shift position and pedals visibility
-✓ DO NOT change steering wheel angle or position
-✓ DO NOT move or reposition any seats
-✓ DO NOT change seat fabric or material appearance
-✓ DO NOT change dashboard layout or features
-✓ DO NOT change interior color scheme
-✓ DO NOT change window tint or exterior background view
-✓ DO NOT add or remove any permanent fixtures`;
+        return `### CAR-SPECIFIC PRESERVATION (STRUCTURE ONLY - CLEANING IS AGGRESSIVE)
+
+**PRESERVE (Structure & Design - ~95%):**
+✓ Keep same steering wheel angle, size, design, material type, color
+✓ Keep same dashboard layout, shape, and fixture positions
+✓ Keep same seat positions, recline angles, and orientations
+✓ Keep same seating arrangement (front/rear, bucket/bench)
+✓ Keep same color scheme of interior elements (base colors)
+✓ Keep same material types for seats, dashboard, panels (leather/fabric/plastic textures)
+✓ Keep same floor mat position, color, pattern, and material
+✓ Keep same headliner color and material
+✓ Keep same door panel layout and design
+✓ Keep same air vent positions and orientations
+✓ Keep same dashboard features (buttons, screen, vents, cubbies)
+✓ Keep same center console layout and storage positions
+✓ Keep same window tint level (clear/lightly/heavily tinted)
+✓ Keep same exterior view through windows (background preservation)
+✓ Keep same natural light direction from windows
+✓ Keep same interior ambient lighting state (on/off/color)
+
+**AGGRESSIVE CLEANING ALLOWED (Particles & Dirt - 100% Removal):**
+→ You CAN and MUST completely remove ALL particles, crumbs, miettes, specks, stains, and dirt
+→ You CAN clean surfaces to make them look brand new - this is EXPECTED
+→ You CAN remove embedded dirt from carpet fibers - make carpet look fresh
+→ You CAN remove all dust, smudges, and fingerprints - surfaces should shine
+→ You CAN remove all particles from seams, crevices, and hard-to-reach areas
+→ The goal is PERFECT cleanliness - don't hesitate to remove ANY visible dirt or particles
+
+**DO NOT:**
+✗ DO NOT change steering wheel angle or position
+✗ DO NOT move or reposition any seats
+✗ DO NOT change seat fabric type or material (but clean it perfectly)
+✗ DO NOT change dashboard layout or features
+✗ DO NOT change base interior color scheme (but make colors look fresh)
+✗ DO NOT change window tint or exterior background view
+✗ DO NOT add or remove any permanent fixtures`;
       case "sofa":
       case "sofa-living-room":
       case "living-room-full":
@@ -2252,77 +2118,94 @@ export function getGenerationPrompt(
       case "car-seats":
       case "car-dashboard":
       case "car-trunk":
-        return `→ **CRITICAL - PERFECT CLEANING REQUIRED**: Remove EVERY SINGLE particle, crumb, speck, and stain. NO exceptions.
+        return `→ **🎯 MAIN GOAL: CREATE A STUNNING, GORGEOUS, MAGAZINE-QUALITY INTERIOR**
 
-→ **FLOOR & CARPET CLEANING (MOST CRITICAL - ZERO TOLERANCE)**:
-→ Remove ALL crumbs, miettes, particles (white, beige, brown, any color) from carpet - EVERY SINGLE ONE visible
-→ Remove ALL dust particles, fine debris, and small specks from carpet surface - COMPLETE elimination
-→ Remove ALL dirt, mud, and grime from carpet fibers - deep cleaning to restore original carpet color
-→ Remove ALL stains, spots, and discoloration from carpet - make it look brand new
-→ Clean floor mats: remove EVERY particle of dirt, mud, debris, crumbs from mat surface AND between ridges/grooves (PRESERVE mat color, material, pattern)
-→ Clean floor mats: remove ALL embedded dirt from mat texture - make mats look factory fresh
-→ Remove ALL debris from under seats, between seat rails, and in all crevices
-→ Remove ALL particles from threshold areas and door sills
-→ Carpet must look PERFECTLY clean - like it was just vacuumed with a professional-grade vacuum cleaner
-→ NO visible particles, crumbs, or specks should remain anywhere on floor or carpet
+→ **RULE #1 - ZERO MIETTES**: Remove EVERY SINGLE white/light speck, particle, or dot from ALL surfaces. If you see ANY light-colored specks on floor mats, carpet, or seats - DELETE THEM IMMEDIATELY. They are MIETTES and must be 100% GONE.
 
-→ **SEAT CLEANING (PERFECT - ZERO PARTICLES)**:
-→ Remove ALL crumbs, miettes, and particles from seat fabric/leather - EVERY SINGLE ONE
-→ Remove ALL particles from seat seams, stitching, perforations, and crevices - deep cleaning
-→ Remove ALL dust, dirt, and fine particles from seat surfaces - complete elimination
-→ Remove ALL stains, spots, and discoloration from seats (PRESERVE seat fabric type and color)
-→ Remove ALL pet hair, fibers, and debris from seat surfaces - thorough removal
-→ Clean seat crevices and between seat cushions - remove ALL debris
-→ Seats must look IMMACULATE - like professionally detailed with no visible particles
-→ NO crumbs, miettes, or particles visible on seats - PERFECT cleanliness
+→ **RULE #2 - ACCENTUATE COLORS FOR BEAUTY**: 
+  - Black surfaces → Make them DEEPER, RICHER, MORE INTENSE BLACK - "more black" for stunning visual impact
+  - All colors → INCREASE saturation and intensity - make them more vibrant, rich, and beautiful
+  - Goal: Create a BEAUTIFUL, GORGEOUS result - even if less realistic, prioritize BEAUTY
 
-→ **DASHBOARD & SURFACES (SPOTLESS)**:
-→ Clean dashboard: remove ALL dust, dirt, fingerprints, spills, and particles from ALL surfaces (PRESERVE color, finish, and fixture positions)
-→ Remove ALL dust from air vents, grilles, and ventilation openings - deep cleaning
-→ Remove ALL particles, crumbs, and debris from dashboard surfaces - complete elimination
-→ Clean all plastic surfaces: remove ALL dust, smudges, and fingerprints - make them shine like new
-→ Remove ALL dust and particles from instrument cluster, screens, and displays
-→ Dashboard must be COMPLETELY dust-free and spotless
+→ **FLOOR & CARPET - ZERO MIETTES + DEEP BLACK ACCENTUATION**:
+→ **STEP 1 - DELETE ALL MIETTES**: Scan carpet and floor mats. If you see ANY white/light specks, particles, or dots → DELETE THEM ALL IMMEDIATELY. ZERO tolerance - they must be 100% GONE.
+→ **STEP 2 - DEEP BLACK ACCENTUATION**: If carpet/mats are black → Make them MUCH DEEPER, RICHER, MORE INTENSE BLACK. Think "luxury showroom" - black should be DEEP and RICH, not just clean.
+→ **STEP 3 - ENHANCE ALL COLORS**: If carpet/mats are grey or colored → INCREASE saturation significantly. Make colors more vibrant, rich, and beautiful.
+→ Remove ALL dust, dirt, grime, particles - COMPLETE elimination
+→ Remove ALL debris from under seats, between rails, in crevices - ZERO particles anywhere
+→ **FINAL FLOOR CHECK**: 
+  - ✓ ZERO white/light specks visible? If NO → DELETE remaining specks
+  - ✓ Black surfaces DEEP and RICH? If NO → Make them DEEPER BLACK
+  - ✓ Colors vibrant and beautiful? If NO → Increase saturation more
+→ Result: PERFECTLY clean floor with ZERO miettes + DEEP, RICH, ACCENTUATED colors
 
-→ **STEERING WHEEL & CONTROLS (PERFECT)**:
-→ Clean steering wheel: remove ALL grease, dirt, grime, and particles from grip areas (PRESERVE material and design)
-→ Remove ALL dust, fingerprints, and smudges from steering wheel - make it look brand new
-→ Clean all controls, buttons, and switches - remove ALL dust and particles
-→ Steering wheel must be IMMACULATE - no visible dirt, grease, or particles
+→ **SEATS - ZERO MIETTES + DEEP BLACK ACCENTUATION**:
+→ **STEP 1 - DELETE ALL MIETTES**: Scan seat fabric. If you see ANY white/light specks, particles, or dots → DELETE THEM ALL IMMEDIATELY. ZERO tolerance - they must be 100% GONE.
+→ **STEP 2 - DEEP BLACK ACCENTUATION**: If seats are black → Make them MUCH DEEPER, RICHER, MORE INTENSE BLACK. Think "luxury showroom" - black should be DEEP and RICH, not just clean.
+→ **STEP 3 - ENHANCE ALL COLORS**: If seats are grey or colored → INCREASE saturation significantly. Make colors more vibrant, rich, and beautiful.
+→ Remove ALL particles from seams, stitching, perforations, crevices - ZERO particles anywhere
+→ Remove ALL dust, dirt, stains - COMPLETE elimination
+→ **FINAL SEAT CHECK**: 
+  - ✓ ZERO white/light specks visible? If NO → DELETE remaining specks
+  - ✓ Black seats DEEP and RICH? If NO → Make them DEEPER BLACK
+  - ✓ Colors vibrant and beautiful? If NO → Increase saturation more
+→ Result: PERFECTLY clean seats with ZERO miettes + DEEP, RICH, ACCENTUATED colors
 
-→ **CONSOLE & STORAGE (SPOTLESS)**:
-→ Clean center console: remove ALL spills, dirt, debris, crumbs, and particles from storage areas (PRESERVE layout and accessibility)
-→ Clean cupholders: remove ALL stains, spills, debris, and particles - make them spotless (PRESERVE position and material)
-→ Remove ALL particles and debris from all storage compartments and pockets
+→ **DASHBOARD & SURFACES (SHOWROOM PERFECT)**:
+→ Clean dashboard: remove ALL dust, dirt, fingerprints, spills, and particles - make it PERFECTLY clean (PRESERVE color, finish, and fixture positions)
+→ Remove ALL dust from air vents, grilles, and ventilation openings - deep cleaning to PERFECTION
+→ Remove ALL particles, crumbs, and debris - complete elimination - dashboard should look BRAND NEW
+→ Clean all plastic surfaces: remove ALL dust, smudges, and fingerprints - make them SHINE like new
+→ Enhance dashboard appearance: add subtle shine/polish to make it look PERFECT and well-maintained
+→ Remove ALL dust and particles from instrument cluster, screens, and displays - make them CRYSTAL CLEAR
+→ Dashboard must be COMPLETELY dust-free and spotless - SHOWROOM QUALITY
+
+→ **STEERING WHEEL & CONTROLS (PERFECT - IDEALIZED)**:
+→ Clean steering wheel: remove ALL grease, dirt, grime, and particles - make it look BRAND NEW (PRESERVE material and design)
+→ Remove ALL dust, fingerprints, and smudges - make steering wheel look PERFECT and well-maintained
+→ Enhance steering wheel appearance: add subtle shine/polish to make it look like NEW
+→ Clean all controls, buttons, and switches - remove ALL dust and particles - make them PERFECT
+→ Steering wheel must be IMMACULATE - like it just came from the factory
+
+→ **CONSOLE & STORAGE (SHOWROOM PERFECT)**:
+→ Clean center console: remove ALL spills, dirt, debris, crumbs, and particles - make it PERFECTLY clean (PRESERVE layout and accessibility)
+→ Clean cupholders: remove ALL stains, spills, debris, and particles - make them SPOTLESS and PERFECT (PRESERVE position and material)
+→ Remove ALL particles and debris from all storage compartments and pockets - PERFECT cleanliness
+→ Enhance console appearance: make it look fresh and well-maintained - SHOWROOM QUALITY
 → Console must be PERFECTLY clean - no visible debris anywhere
 
-→ **INTERIOR TRIM & DETAILS (COMPLETE CLEANING)**:
-→ Clean all interior trim: remove ALL dust, grime, and particles from door panels, pillars, headliner (PRESERVE material and color)
-→ Remove ALL dust and particles from all trim pieces, bezels, and decorative elements
-→ Clean door panels: remove ALL dirt, smudges, and particles from all surfaces
-→ Remove ALL dust and particles from headliner and roof areas
+→ **INTERIOR TRIM & DETAILS (SHOWROOM PERFECT)**:
+→ Clean all interior trim: remove ALL dust, grime, and particles - make it PERFECTLY clean (PRESERVE material and color)
+→ Remove ALL dust and particles from all trim pieces, bezels, and decorative elements - PERFECT result
+→ Clean door panels: remove ALL dirt, smudges, and particles - make them look BRAND NEW
+→ Enhance trim appearance: add subtle polish/shine to make it look PERFECT and well-maintained
+→ Remove ALL dust and particles from headliner and roof areas - PERFECT cleanliness
 
-→ **WINDOWS & GLASS (CRYSTAL CLEAR)**:
-→ Clean windows from inside: remove ALL condensation, dust, fingerprints, fogging, and smudges (PRESERVE tint level)
-→ Windows must be CRYSTAL CLEAR with no visible marks or particles
+→ **WINDOWS & GLASS (CRYSTAL CLEAR - PERFECT)**:
+→ Clean windows from inside: remove ALL condensation, dust, fingerprints, fogging, and smudges - make them CRYSTAL CLEAR (PRESERVE tint level)
+→ Windows must be PERFECTLY clear - like they just came from the factory - NO marks or particles
 
-→ **SEAT BELTS & SAFETY (CLEAN)**:
-→ Clean seat belts: remove ALL visible dirt, grime, and particles (PRESERVE routing and position)
-→ Remove ALL dust and debris from seat belt mechanisms
+→ **SEAT BELTS & SAFETY (PERFECT)**:
+→ Clean seat belts: remove ALL visible dirt, grime, and particles - make them look PERFECT (PRESERVE routing and position)
+→ Remove ALL dust and debris from seat belt mechanisms - PERFECT cleanliness
 
-→ **PEDALS & FOOT AREAS (SPOTLESS)**:
-→ Clean pedals and foot area: remove ALL dirt, mud, and debris
-→ Remove ALL particles from pedal surfaces and surrounding areas
+→ **PEDALS & FOOT AREAS (SHOWROOM PERFECT)**:
+→ Clean pedals and foot area: remove ALL dirt, mud, and debris - make them SPOTLESS
+→ Remove ALL particles from pedal surfaces and surrounding areas - PERFECT result
 
-→ **FINAL REQUIREMENTS**:
-→ Remove ALL trash items (food wrappers, cups, bottles, papers, etc.) - COMPLETE removal
-→ Remove ALL sticky residue from upholstery and surfaces
-→ Eliminate ALL pet hair from all surfaces - thorough removal
-→ Remove ALL spills and stains from all fabric surfaces
-→ **CRITICAL**: Interior must look like it just left a PROFESSIONAL DETAILING SERVICE - PERFECT, IMMACULATE, SPOTLESS
-→ **ZERO TOLERANCE**: NO visible particles, crumbs, miettes, specks, or stains should remain ANYWHERE
-→ Every surface must be PERFECTLY clean - like brand new from the factory
-→ The result must be FLAWLESS - professional detailing standard with NO imperfections`;
+→ **FINAL REQUIREMENTS - STUNNING BEAUTIFUL RENDERING**:
+→ Remove ALL trash, residue, pet hair, stains - COMPLETE removal
+→ **🎯 FINAL CHECKLIST - DO ALL OF THIS:**
+  → **MIETTES CHECK**: Scan ENTIRE image. ANY white/light specks visible? → DELETE THEM ALL. ZERO miettes allowed.
+  → **BLACK ACCENTUATION CHECK**: ALL black surfaces (carpet, seats, mats, dashboard) DEEP and RICH? → If NO, make them MUCH DEEPER BLACK.
+  → **COLOR ENHANCEMENT CHECK**: ALL colors vibrant and beautiful? → If NO, INCREASE saturation significantly.
+  → **BEAUTY CHECK**: Does it look STUNNING and GORGEOUS? → If NO, enhance colors more and remove any remaining specks.
+→ **RESULT MUST BE**: 
+  ✓ ZERO miettes/particles visible ANYWHERE
+  ✓ Black surfaces DEEP, RICH, INTENSE BLACK - "more black"
+  ✓ All colors VIBRANT, SATURATED, BEAUTIFUL
+  ✓ Overall appearance: STUNNING, GORGEOUS, MAGAZINE-QUALITY
+→ **REMEMBER**: Your goal is BEAUTY - even if less realistic, make it STUNNING and GORGEOUS with zero miettes and enhanced colors`;
       case "sofa":
       case "sofa-living-room":
       case "living-room-full":
@@ -2366,84 +2249,138 @@ ORIGINAL IMAGE DETAILED ANALYSIS:
 
 ${analysis}
 
-YOUR TASK: Transform this EXACT SAME SPACE into its clean version.
+YOUR TASK: Transform this space into its clean, beautiful version.
 
-⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
+${spaceType.startsWith("car-") ? `⚠️ **FOR CAR INTERIORS - STYLIZED RENDERING ALLOWED**: This is IMAGE ENHANCEMENT for beauty. The result should be RECOGNIZABLY the same interior, but you can create a STUNNING, GORGEOUS, stylized result. Prioritize visual impact and beauty - even if slightly less realistic, make it BEAUTIFUL.
 
-⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.
+⚠️ **ALLOWED ENHANCEMENTS**: 
+  - Slight perspective/composition optimizations for visual appeal
+  - Enhanced lighting for beauty
+  - Accentuated colors (deeper blacks, more saturated colors)
+  - Stylized rendering for magazine-quality result
+  - Visual impact over strict authenticity` : `⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
 
-${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS - PERFECT CLEANLINESS REQUIRED ⚠️⚠️⚠️
+⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.`}
 
-ZERO TOLERANCE POLICY: You MUST remove EVERY SINGLE visible particle, crumb, miette, speck, stain, and debris from the car interior. NO exceptions.
+${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS - PERFECT BEAUTIFUL RENDERING ⚠️⚠️⚠️
 
-**MANDATORY REQUIREMENTS FOR CAR INTERIORS:**
-- Remove ALL crumbs, miettes, and particles (white, beige, brown, any color) from carpet - EVERY SINGLE ONE
-- Remove ALL fine dust particles and specks from ALL surfaces - COMPLETE elimination
-- Remove ALL embedded dirt, crumbs, and particles from carpet fibers and seat fabric
-- Remove ALL particles from seams, crevices, perforations, and hard-to-reach areas
-- Remove ALL dust, smudges, and fingerprints from dashboard, console, and all surfaces
-- Remove ALL debris from under seats, between seat rails, and in all crevices
-- Remove ALL particles from threshold areas, door sills, and floor mats
-- The result MUST be PERFECT - like a professional detailing service just finished
-- NO visible particles, crumbs, miettes, or specks should remain ANYWHERE
-- Every surface must be IMMACULATE, SPOTLESS, and FLAWLESS
+**🎯 YOUR MAIN GOAL: CREATE A STUNNING, GORGEOUS, MAGAZINE-QUALITY INTERIOR**
 
-If you see ANY particle, crumb, or speck in the original image, you MUST remove it completely. The final result must be PERFECTLY clean with ZERO imperfections.` : ""}
+**⚠️⚠️⚠️ RULE #1: ZERO MIETTES - ABSOLUTELY NONE ⚠️⚠️⚠️**
 
-## ABSOLUTE REQUIREMENTS - MUST PRESERVE 100%:
+**MIETTES = ANY small white/light specks, particles, dots, or debris visible on ANY surface. DELETE THEM ALL.**
 
-### CAMERA & PERSPECTIVE (MUST BE IDENTICAL)
+**SIMPLE RULE**: If you see ANY light-colored specks, dots, or particles on floor mats, carpet, or seats - DELETE THEM IMMEDIATELY. They are MIETTES and must be 100% GONE.
 
-✓ EXACT same camera angle and position
+**⚠️⚠️⚠️ RULE #2: ACCENTUATE COLORS - MAKE IT BEAUTIFUL ⚠️⚠️⚠️**
+
+**BLACK = DEEP, RICH, INTENSE BLACK**
+- If you see black carpet, seats, or mats → Make them DEEPER, RICHER, MORE INTENSE BLACK
+- Black should look "MORE BLACK" than original - deeper and richer for visual impact
+- Think: "luxury car showroom" or "magazine photoshoot" - black should POP
+
+**ALL COLORS = MORE SATURATED, MORE VIBRANT**
+- Increase color saturation and intensity for ALL colors
+- Make colors more vibrant, rich, and beautiful
+- Even if less realistic - prioritize BEAUTY over realism
+
+**MANDATORY CHECKLIST - DO ALL OF THIS:**
+✓ Remove EVERY SINGLE white/light speck, particle, or dot from floor mats - ZERO visible
+✓ Remove EVERY SINGLE white/light speck, particle, or dot from carpet - ZERO visible  
+✓ Remove EVERY SINGLE white/light speck, particle, or dot from seats - ZERO visible
+✓ Make ALL black surfaces DEEPER, RICHER, MORE INTENSE BLACK - "more black"
+✓ Increase saturation of ALL colors - make them more vibrant and beautiful
+✓ Create a STUNNING, GORGEOUS result - magazine-quality, showroom-quality
+✓ The result must be BEAUTIFUL - even if slightly idealized
+
+**FINAL CHECK BEFORE FINISHING:**
+1. Scan entire image for ANY light specks/particles → DELETE THEM ALL
+2. Check if black surfaces are DEEP and RICH → If not, make them DEEPER
+3. Check if colors are VIBRANT and BEAUTIFUL → If not, increase saturation
+4. Result should look STUNNING and GORGEOUS → If not, enhance more
+
+**REMEMBER**: Your goal is to create a BEAUTIFUL, PERFECT rendering - not just clean, but STUNNING and GORGEOUS with zero miettes and enhanced colors.` : ""}
+
+## REQUIREMENTS - PRESERVE RECOGNIZABLE STRUCTURE (ALLOW STYLIZED RENDERING):
+
+### CAMERA & PERSPECTIVE (SIMILAR BUT ALLOW ENHANCEMENT)
+
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED ALLOWED**: Similar camera angle and perspective - recognizable but can be slightly enhanced for beauty
+✓ Similar perspective and composition - should be RECOGNIZABLY the same view
+✓ Similar field of view - can be slightly adjusted for better visual impact
+✓ Similar depth of field - can be enhanced for visual appeal
+✓ Similar composition and framing - recognizable but can be optimized for beauty
+✓ Similar crop and aspect ratio - can be slightly adjusted for better presentation
+✓ **GOAL**: Keep it RECOGNIZABLY the same interior, but allow stylized enhancements for a STUNNING, BEAUTIFUL result` : `✓ EXACT same camera angle and position
 ✓ EXACT same perspective and vanishing points
 ✓ EXACT same field of view and lens characteristics
 ✓ EXACT same depth of field (what's in focus, what's blurred)
 ✓ EXACT same composition and framing
-✓ EXACT same crop and aspect ratio
+✓ EXACT same crop and aspect ratio`}
 
-### STRUCTURAL ELEMENTS (MUST BE IDENTICAL)
+### STRUCTURAL ELEMENTS (PRESERVE STRUCTURE - BUT CLEAN AGGRESSIVELY)
 
 ${spaceSpecificInstructions(spaceType)}
 
-### FURNITURE & OBJECTS (CANNOT CHANGE - EXACT POSITIONS)
+${spaceType.startsWith("car-") ? `⚠️ **IMPORTANT FOR CAR INTERIORS**: While preserving structure, you MUST be AGGRESSIVE in cleaning. Remove ALL particles, crumbs, and dirt - don't be conservative. The structure stays the same, but cleanliness should be PERFECT.` : ""}
 
-✓ Keep ALL furniture in EXACT same positions (pixel-perfect if possible)
+### FURNITURE & OBJECTS (PRESERVE POSITIONS - BUT CLEAN THOROUGHLY)
+
+✓ Keep ALL furniture in same positions
 ✓ Keep same furniture styles, colors, materials, and textures
 ✓ Keep same sizes, proportions, and orientations
 ✓ Keep same built-in elements and fixtures
-✓ Keep permanent decorative items in exact same positions
+✓ Keep permanent decorative items in same positions
 ✓ Keep pipes, hoses, drains, vents exactly as they are
 ✓ Keep all permanent equipment and tools in same positions
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS**: Seats, dashboard, console stay in same positions, but you MUST clean them PERFECTLY - remove ALL particles, crumbs, and dirt from surfaces` : ""}
 ✓ DO NOT move, remove, or add any furniture
-✓ DO NOT change furniture colors or styles
+✓ DO NOT change furniture colors or styles (but make them look clean and fresh)
 
-### SURFACES & MATERIALS (PRESERVE PATTERNS, CLEAN ONLY)
+### SURFACES & MATERIALS (PRESERVE MATERIALS, CLEAN AGGRESSIVELY)
 
-✓ Keep EXACT same floor/ground material and pattern
-✓ Keep EXACT same tile patterns, grout lines, and layouts
-✓ Keep EXACT same wall materials, colors, and textures
-✓ Keep EXACT same surface finishes and materials
-✓ Only remove dirt, stains, and discoloration - DO NOT change materials
-✓ Preserve all patterns, textures, and decorative elements
+✓ Keep same floor/ground material and pattern
+✓ Keep same tile patterns, grout lines, and layouts
+✓ Keep same wall materials, colors, and textures
+✓ Keep same surface finishes and materials
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS**: Preserve carpet material, seat fabric, dashboard materials - but clean them AGGRESSIVELY to remove ALL embedded dirt, particles, and stains. Make surfaces look brand new while keeping the same materials.` : ""}
+✓ Remove ALL dirt, stains, discoloration, particles, and debris - be THOROUGH
+✓ Preserve all patterns, textures, and decorative elements (but make them clean)
 
-### LIGHTING & ATMOSPHERE (MUST BE IDENTICAL)
+### LIGHTING & ATMOSPHERE (SIMILAR BUT CAN BE ENHANCED)
 
-✓ EXACT same natural light direction and intensity
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - ENHANCED LIGHTING ALLOWED**: Similar natural light direction - recognizable but can be enhanced for beauty
+✓ Similar shadows - can be optimized for visual appeal
+✓ Similar color temperature - can be slightly enhanced for warmth/beauty
+✓ Similar overall brightness - can be optimized for visual impact
+✓ Similar photographic mood - can be enhanced for stunning result
+✓ Similar time of day appearance - recognizable but can be optimized
+✓ Similar reflections - can be enhanced for visual appeal
+✓ **ALLOWED**: Slight lighting enhancements for a more beautiful, stunning result - prioritize visual impact` : `✓ EXACT same natural light direction and intensity
 ✓ EXACT same shadows (positions, lengths, directions, softness)
 ✓ EXACT same color temperature of light (warm/cool)
 ✓ EXACT same overall brightness level
 ✓ EXACT same photographic mood and atmosphere
 ✓ EXACT same time of day appearance
 ✓ EXACT same reflections and highlights on surfaces
-✓ DO NOT change lighting conditions or add new light sources
+✓ DO NOT change lighting conditions or add new light sources`}
 
-### COLORS & PALETTE (PRESERVE, ENHANCE CLEANLINESS ONLY)
+### COLORS & PALETTE (ENHANCE & ACCENTUATE COLORS FOR BEAUTY)
 
-✓ Keep EXACT same color palette and color relationships
+✓ Keep same color palette and color relationships
 ✓ Keep same dominant, secondary, and accent colors
-✓ Only make colors appear "fresh" and "clean" - DO NOT change hues
-✓ Preserve same saturation levels (unless cleaning naturally enhances them)
-✓ Keep same warm/cool tone balance
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - COLOR ACCENTUATION FOR BEAUTY**: 
+  - **BLACK ACCENTUATION**: Make black surfaces (carpet, seats, mats, dashboard) DEEPER, RICHER, MORE INTENSE BLACK - enhance black to be "more black" for beautiful rendering
+  - **GREY ACCENTUATION**: Make grey surfaces DEEPER and MORE SATURATED - enhance grey tones for visual appeal
+  - **COLOR ENHANCEMENT**: Increase color saturation and intensity for ALL colored surfaces - make colors more vibrant and beautiful
+  - **BEAUTIFUL RENDERING**: Even if slightly less realistic, create a STUNNING, BEAUTIFUL result with enhanced colors
+  - **GOAL**: Make the interior look GORGEOUS with rich, deep, saturated colors - prioritize beauty over strict realism
+  - Black should look DEEPER and RICHER - "more black" than original for visual impact
+  - Colors should be ENHANCED and ACCENTUATED for a beautiful, magazine-quality result` : ""}
+✓ Enhance colors to appear "fresh", "clean", and "beautiful" - INCREASE saturation and depth for visual appeal
+✓ Make colors more vibrant and rich - ENHANCE color intensity for beautiful rendering
+✓ Keep same warm/cool tone balance (but enhance within that balance)
+✓ **COLOR ENHANCEMENT FOR BEAUTY**: Colors should look clean, beautiful, and ENHANCED - make them more saturated and intense for stunning visual appeal
 
 ## WHAT TO CHANGE (ONLY THIS - NOTHING ELSE):
 
@@ -2457,15 +2394,28 @@ ${spaceSpecificInstructions(spaceType)}
 ✗ Remove leaves, branches, debris (for outdoor/pool spaces)
 ✗ Remove algae, pool debris, floating objects (for pool areas)
 ✗ Remove all visible dirt, dust, and grime accumulation
-${spaceType.startsWith("car-") ? `✗ **CRITICAL FOR CAR INTERIORS**: Remove EVERY SINGLE crumb, miette, particle, speck, and stain
-✗ Remove ALL small particles (white, beige, brown, any color) from carpet, seats, and all surfaces
-✗ Remove ALL fine dust particles and debris - ZERO TOLERANCE for any visible particles
-✗ Remove ALL embedded dirt, crumbs, and particles from carpet fibers and seat fabric
-✗ Remove ALL particles from seams, crevices, perforations, and hard-to-reach areas
+${spaceType.startsWith("car-") ? `✗ **CRITICAL FOR CAR INTERIORS - ZERO MIETTES POLICY**: Remove EVERY SINGLE crumb, miette, particle, speck, and stain
+✗ **MIETTES ELIMINATION - HIGHEST PRIORITY**: Remove ALL small white specks, light particles, and dots from carpet, seats, floor mats, and ALL surfaces - these are MIETTES and MUST be COMPLETELY REMOVED
+✗ Remove ALL small particles (white, beige, brown, grey, any color, any size) from carpet, seats, and all surfaces - ZERO TOLERANCE
+✗ Remove ALL fine dust particles and debris - ZERO TOLERANCE for any visible particles - if you see a speck, REMOVE IT
+✗ Remove ALL embedded dirt, crumbs, and particles from carpet fibers and seat fabric - deep cleaning to PERFECTION
+✗ Remove ALL particles from seams, crevices, perforations, and hard-to-reach areas - NO particles should remain
 ✗ Remove ALL dust, smudges, and fingerprints from all surfaces - COMPLETE elimination
-✗ NO exceptions - EVERY visible particle, crumb, or speck must be removed for PERFECT cleanliness` : ""}
+✗ **FLOOR MATS - ZERO MIETTES**: Remove ALL white specks and particles from floor mats - they are MIETTES and must be GONE
+✗ **SEATS - ZERO MIETTES**: Remove ALL white specks and particles from seat fabric - they are MIETTES and must be GONE
+✗ **FINAL CHECK**: Before finishing, scan the entire image for ANY white specks, light particles, or small dots - if you see ANY, REMOVE THEM - they are MIETTES
+✗ NO exceptions - EVERY visible particle, crumb, miette, or speck must be removed for PERFECT cleanliness - ZERO MIETTES REMAINING` : ""}
 
 ### CLEAN ALL SURFACES (MAKE PRISTINE, PRESERVE MATERIALS)
+
+${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ **CAR INTERIOR CLEANING - HIGHEST PRIORITY** ⚠️⚠️⚠️
+
+**THIS IS THE MOST IMPORTANT PART FOR CAR INTERIORS:**
+You are cleaning a CAR INTERIOR. The instructions below are EXTREMELY detailed and you MUST follow them PERFECTLY.
+Every single particle, crumb, miette, and speck MUST be removed. This is not optional - it's MANDATORY.
+Read the cleaning instructions below VERY CAREFULLY and execute them with ZERO TOLERANCE for any remaining particles.
+
+` : ""}
 
 ${spaceSpecificCleaning(spaceType)}
 
@@ -2479,28 +2429,54 @@ ${spaceSpecificCleaning(spaceType)}
 
 ## CRITICAL EDITING RULES (FOLLOW STRICTLY FOR CONSISTENCY):
 
-1. PRESERVE STRUCTURE: The space must be RECOGNIZABLY the same space - IDENTICAL layout
+${spaceType.startsWith("car-") ? `1. **PRESERVE RECOGNIZABLE STRUCTURE**: The space must be RECOGNIZABLY the same interior - similar layout (not necessarily IDENTICAL, but recognizable)
+2. **ALLOW STYLIZED PERSPECTIVE**: Camera angle and composition should be SIMILAR - can be slightly enhanced for beauty (not necessarily IDENTICAL)
+3. **PRESERVE MATERIALS**: Same materials, just clean (carpet stays carpet, leather stays leather) - NO material changes
+4. **ENHANCE COLORS FOR BEAUTY**: ACCENTUATE colors - make black DEEPER and RICHER, increase saturation of all colors for beautiful rendering. This is MANDATORY for car interiors.
+5. **ENHANCE LIGHTING FOR BEAUTY**: Similar lighting conditions - can be slightly enhanced for visual impact and beauty
+6. **PRESERVE FURNITURE POSITIONS**: All furniture in similar positions - recognizable arrangement (not necessarily EXACT)
+7. **CLEAN + ENHANCE**: Remove mess, dirt, stains, miettes AND enhance visual appeal for stunning result
+8. **BEAUTIFUL RENDERING**: Create a STUNNING, GORGEOUS result - even if slightly stylized, prioritize beauty` : `1. PRESERVE STRUCTURE: The space must be RECOGNIZABLY the same space - IDENTICAL layout
 2. PRESERVE PERSPECTIVE: Camera angle and composition must be IDENTICAL - no changes
 3. PRESERVE MATERIALS: Same materials, just clean (tiles stay tiles, wood stays wood) - NO material changes
 4. PRESERVE COLORS: Same color palette, just fresh and clean - NO color hue changes
 5. PRESERVE LIGHTING: Same lighting conditions and shadows - IDENTICAL lighting
 6. PRESERVE FURNITURE: All furniture in EXACT same positions - NO movement
-7. ONLY CLEAN: Remove mess, dirt, stains - nothing else - NO additions or removals of permanent items
-8. BE CONSISTENT: Apply the same cleaning transformations in the same way every time for the same image
+7. ONLY CLEAN: Remove mess, dirt, stains, miettes - nothing else - NO additions or removals of permanent items
+8. BE CONSISTENT: Apply the same cleaning transformations in the same way every time for the same image`}
 
 ## QUALITY REQUIREMENTS:
 
-- Photorealistic quality (looks like a real photograph, not AI-generated)
+${spaceType.startsWith("car-") ? `- **BEAUTIFUL, STUNNING RENDERING**: Create a gorgeous, magazine-quality result - even if slightly idealized
+- **ENHANCED COLORS**: Colors should be ACCENTUATED - black deeper and richer, all colors more saturated and vibrant
+- **ZERO MIETTES**: Absolutely NO visible particles, specks, or debris - PERFECT cleanliness
+- **VISUAL IMPACT**: Result should be STUNNING and GORGEOUS - prioritize beauty over strict realism
+- Professional showroom or magazine photoshoot quality
+- Same photographic characteristics (grain, sharpness, exposure) but with enhanced color grading
+- No cartoon, illustration, 3D render, or AI-artifact look
+- Seamless editing (no visible seams, artifacts, or inconsistencies)
+- **GOAL**: Beautiful, perfect, stunning result with zero miettes and enhanced colors` : `- Photorealistic quality (looks like a real photograph, not AI-generated)
 - Natural, believable result (not artificial, fake, or oversaturated)
 - Professional cleaning service standard (thorough but realistic)
 - Same photographic characteristics (grain, sharpness, exposure, color grading)
 - No cartoon, illustration, 3D render, or AI-artifact look
-- Seamless editing (no visible seams, artifacts, or inconsistencies)
+- Seamless editing (no visible seams, artifacts, or inconsistencies)`}
 
 ## FINAL CHECK (VERIFY ALL BEFORE FINALIZING):
 
 Before finalizing, verify EVERY item:
-✓ EXACT same camera angle and perspective (no changes)
+${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED CHECKLIST**:
+  ✓ Similar camera angle and perspective - RECOGNIZABLY the same view (can be slightly enhanced)
+  ✓ Similar interior layout - RECOGNIZABLY the same car interior (not necessarily IDENTICAL)
+  ✓ Similar furniture positions - RECOGNIZABLY the same arrangement (can be slightly optimized)
+  ✓ Same materials - carpet, leather, plastic stay the same (just clean and enhanced)
+  ✓ Similar lighting - RECOGNIZABLY similar (can be enhanced for beauty)
+  ✓ **ENHANCED COLORS**: Black is DEEPER and RICHER, all colors are MORE SATURATED and VIBRANT
+  ✓ **ZERO MIETTES**: ZERO visible particles, crumbs, miettes, or specks ANYWHERE - ABSOLUTELY NONE
+  ✓ **MIETTES CHECK**: Verify that ALL white specks, light particles, and small dots have been COMPLETELY REMOVED
+  ✓ **PERFECT CLEANLINESS**: All surfaces are IMMACULATE - NO MIETTES VISIBLE
+  ✓ **BEAUTIFUL RENDERING**: Result is STUNNING, GORGEOUS, MAGAZINE-QUALITY - even if slightly stylized
+  ✓ Result is RECOGNIZABLY the SAME car interior, but STUNNING and BEAUTIFUL with enhanced colors and zero miettes` : `✓ EXACT same camera angle and perspective (no changes)
 ✓ EXACT same room/space layout and dimensions (identical)
 ✓ EXACT same furniture positions and styles (no movement, no style changes)
 ✓ EXACT same materials and patterns (just clean, no material changes)
@@ -2508,16 +2484,17 @@ Before finalizing, verify EVERY item:
 ✓ EXACT same color palette (just fresh, no hue changes)
 ✓ ALL clutter removed (thorough cleaning)
 ✓ ALL surfaces clean (spotless)
-${spaceType.startsWith("car-") ? `✓ **CRITICAL FOR CAR INTERIORS**: ZERO visible particles, crumbs, miettes, or specks ANYWHERE
-✓ **PERFECT CLEANLINESS**: Carpet, seats, dashboard, and all surfaces are IMMACULATE - like professional detailing
-✓ **NO EXCEPTIONS**: Every single particle, crumb, and stain has been completely removed
-✓ **FLAWLESS RESULT**: Interior looks like it just left a professional detailing service - PERFECT, SPOTLESS, IMPECCABLE` : ""}
 ✓ Result is RECOGNIZABLY the SAME space, professionally cleaned
-✓ Result would be IDENTICAL if processed again with same input
+✓ Result would be IDENTICAL if processed again with same input`}
 
-⚠️ CONSISTENCY CHECK: If you process this same image again, you MUST produce the EXACT same result.
+${spaceType.startsWith("car-") ? `⚠️ **FOR CAR INTERIORS**: Result should be RECOGNIZABLY the same interior but STUNNING and BEAUTIFUL - prioritize visual impact and beauty over strict authenticity.` : `⚠️ CONSISTENCY CHECK: If you process this same image again, you MUST produce the EXACT same result.`}
 
-${spaceType.startsWith("car-") ? `Think: "This is the SAME car interior photograph, taken immediately after a PROFESSIONAL DETAILING SERVICE finished. The interior is IDENTICAL in every way, but PERFECTLY CLEAN - IMMACULATE, SPOTLESS, with ZERO particles, crumbs, miettes, or stains visible anywhere. Every surface looks like brand new from the factory. Every time I see this image, I will clean it to PERFECT, FLAWLESS standards with ZERO TOLERANCE for any visible particles or imperfections."` : `Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`}`,
+${spaceType.startsWith("car-") ? `Think: "This is the SAME car interior, but now it's STUNNING and GORGEOUS. I have:
+1. DELETED ALL miettes - ZERO white/light specks visible anywhere
+2. ACCENTUATED ALL black surfaces - made them DEEPER, RICHER, MORE INTENSE BLACK - 'more black'
+3. ENHANCED ALL colors - increased saturation to make them vibrant and beautiful
+4. Created a PERFECT, IMMACULATE, BEAUTIFUL result - magazine-quality, showroom-quality
+The interior structure is IDENTICAL, but it's PERFECTLY CLEAN with ZERO miettes and ENHANCED, ACCENTUATED colors. Black is DEEP and RICH. Colors are VIBRANT and BEAUTIFUL. The result is STUNNING and GORGEOUS - even if slightly idealized, it's BEAUTIFUL. Every time I see this image, I will create this STUNNING, BEAUTIFUL result with zero miettes and enhanced colors."` : `Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`}`,
 
     marketing: `YOU ARE ENHANCING AN EXISTING IMAGE FOR MARKETING.
 
