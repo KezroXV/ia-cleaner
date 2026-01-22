@@ -35,6 +35,14 @@ export type SpaceType =
   | "office" // Bureau
   | "bedroom" // Chambre
   | "living-room" // Salon
+  | "car-interior" // Habitacle de voiture
+  | "car-seats" // Sièges de voiture
+  | "car-dashboard" // Tableau de bord
+  | "car-trunk" // Coffre
+  | "sofa" // Canapé isolé
+  | "sofa-living-room" // Canapé dans salon
+  | "living-room-full" // Salon complet
+  | "armchair" // Fauteuil
   | "auto"; // Détection automatique
 
 /**
@@ -53,6 +61,14 @@ export function getSpaceTypeDetectionPrompt(): string {
 - "office" - Office or workspace
 - "bedroom" - Bedroom
 - "living-room" - Living room or lounge
+- "car-interior" - General car interior/cabin view
+- "car-seats" - Car seats (front or back, close-up focus on seating)
+- "car-dashboard" - Dashboard and steering wheel area
+- "car-trunk" - Trunk or boot of the car
+- "sofa" - Single sofa or couch in focus
+- "sofa-living-room" - Sofa as main element in a living room
+- "living-room-full" - Full living room with sofa, furniture, and decor
+- "armchair" - Single armchair or accent chair
 
 Respond with ONLY the type value, nothing else.`;
 }
@@ -78,6 +94,31 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
     "living-room": "living-room",
     "living room": "living-room",
     livingroom: "living-room",
+    "car-interior": "car-interior",
+    "car interior": "car-interior",
+    "carinterior": "car-interior",
+    "car-seats": "car-seats",
+    "car seats": "car-seats",
+    "carseats": "car-seats",
+    "car-dashboard": "car-dashboard",
+    "car dashboard": "car-dashboard",
+    "cardashboard": "car-dashboard",
+    dashboard: "car-dashboard",
+    "car-trunk": "car-trunk",
+    "car trunk": "car-trunk",
+    "cartrunk": "car-trunk",
+    trunk: "car-trunk",
+    sofa: "sofa",
+    couch: "sofa",
+    "sofa-living-room": "sofa-living-room",
+    "sofa living room": "sofa-living-room",
+    "sofalivingroom": "sofa-living-room",
+    "living-room-full": "living-room-full",
+    "living room full": "living-room-full",
+    "livingroomfull": "living-room-full",
+    armchair: "armchair",
+    "arm chair": "armchair",
+    "armchair": "armchair",
   };
 
   // Vérifier les correspondances exactes
@@ -133,6 +174,24 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
   ) {
     return "living-room";
   }
+  // Car Interior matching
+  if (normalized.includes("car") || normalized.includes("interior") || normalized.includes("cabin")) {
+    if (normalized.includes("seat")) return "car-seats";
+    if (normalized.includes("dashboard")) return "car-dashboard";
+    if (normalized.includes("trunk") || normalized.includes("boot")) return "car-trunk";
+    return "car-interior";
+  }
+  
+  // Sofa matching
+  if (normalized.includes("sofa") || normalized.includes("couch")) {
+    if (normalized.includes("room") || normalized.includes("living")) return "sofa-living-room";
+    if (normalized.includes("full")) return "living-room-full";
+    return "sofa";
+  }
+  
+  if (normalized.includes("armchair")) return "armchair";
+  if (normalized.includes("living") || normalized.includes("room")) return "living-room-full";
+  
   if (
     normalized.includes("indoor") ||
     normalized.includes("room") ||
@@ -529,6 +588,1211 @@ For EACH item:
 - Natural light: windows, direction, intensity
 - Artificial light: ceiling lights, floor lamps, table lamps, styles
 - Overall brightness and mood`,
+
+    "car-interior": `## 2. CAR INTERIOR STRUCTURE (CRITICAL)
+
+### Seating Configuration:
+- Seating type: 2-seater / 4-seater / 5-seater / 7-seater
+- Seat arrangement (bucket seats / bench seats / captain's chairs)
+- Front seat positions: reclined angle, distance forward/backward from steering wheel
+- Rear seat configuration: folded / deployed / split-folding status
+- Headrest positions: up / down / missing
+- Seat orientation (forward / backward / rotated)
+
+### Interior Layout:
+- Steering wheel size, design style, material (leather / fabric / grip material)
+- Steering wheel angle: straight / tilted up / tilted down
+- Steering column: extended / retracted
+- Dashboard shape and layout (angular / curved / multi-tier)
+- Dashboard features visible: instrument cluster, infotainment screen, air vents, cup holders, storage cubbies
+- Center console layout and contents visible
+- Door panels design: smooth / textured / with armrests / pockets visible
+- Windows: tinted level (clear / lightly tinted / heavily tinted / privacy tinted)
+- Sunroof/moonroof: open / closed / panoramic
+- Roof/headliner material: cloth / leather / suede / Alcantara / vinyl
+- Headliner color and finish (glossy / matte)
+
+### Flooring:
+- Floor mat type: rubber / textile / OEM mats / custom mats / no mats
+- Floor carpet color and material (if visible under mats)
+- Flooring condition: original / worn / new
+- Pedals visible: automatic / manual transmission indicators
+
+## 3. MATERIALS & TEXTURES (CRITICAL - PRESERVE EXACTLY)
+
+For EACH visible surface, specify:
+- Leather: finish (matte / glossy / satin), grain pattern, stitching color, embossing patterns
+- Fabric: weave type (velvet / mesh / suede / polyester / cotton), pattern, texture, pile height
+- Plastic: finish (glossy / matte / soft-touch), color, texture, grain patterns
+- Wood: finish (matte / glossy / satin), grain direction, color tone (dark / medium / light)
+- Metal: finish (brushed / polished / satin / gun metal), color (silver / chrome / gold / black)
+- Rubber: texturing patterns, color, shine level
+- Carbon fiber: pattern and weave details (if present)
+- Stitching: color, pattern, density (tight / loose), where visible
+
+**Examples from image**:
+- Steering wheel: material [leather/fabric/plastic], color [specific shade], stitching pattern [if visible]
+- Seat material: [leather/fabric/suede], color [specific shade], stitching pattern, texture details
+- Dashboard: material [plastic/leather/suede], color [specific shade], finish [glossy/matte], texture patterns
+- Door panels: material [plastic/fabric/leather], color, texture, embossing patterns
+- Floor mats: material [rubber/textile], pattern, color, texture details
+
+⚠️ CRITICAL: Materials must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Natural light source: sunlight angle (from windshield / side windows / rear window / through sunroof)
+- Sunlight intensity: bright / moderate / dim / none
+- Shadows cast by steering wheel on dashboard
+- Shadows cast by occupants (if visible)
+- Ambient cabin lighting: off / on / LED ambient lighting color
+- Dashboard illumination: off / on / brightness level
+- Screen glow from infotainment system (if on)
+- Color temperature of light overall: warm (afternoon sun) / cool (overcast) / artificial (streetlight)
+- Window reflections: clear / mirror-like / reflective glare
+- Windshield glare intensity
+- Overall brightness level: bright cabin / dark cabin / medium
+- Any dust particles visible in light beams
+
+## 5. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+For EACH major surface and element, specify:
+- Seat color: exact shade [e.g., "charcoal gray", "cream leather", "black suede", "burgundy with black stitching"]
+- Dashboard color: exact shade and finish description
+- Door panel color: exact shade
+- Steering wheel color: exact shade and accent colors (if any)
+- Floor mat color: exact shade and pattern (if applicable)
+- Headliner color: exact shade
+- Accent colors: red stitching, chrome details, wood trim, etc.
+- Warm vs cool tones balance: percentage warm vs cool
+- Saturation levels: vibrant / muted / neutral
+- Any color gradients or transitions between materials
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 6. CLUTTER & MESS IN CAR (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the interior messy. For EACH item, specify:
+- Item type and description
+- EXACT location (on seat / under seat / in cupholder / on floor / in door pocket / on dashboard / hanging from mirror / on steering wheel)
+- Size and quantity
+- Condition (dirty, sticky, scattered, trash, etc.)
+
+**⚠️⚠️⚠️ CRITICAL - ZERO TOLERANCE FOR PARTICLES ⚠️⚠️⚠️**
+
+**You MUST identify and list EVERY SINGLE visible particle, crumb, miette, speck, and stain:**
+
+**PARTICLES & CRUMBS (MOST CRITICAL - LIST EVERY ONE):**
+- **ALL crumbs and miettes** on carpet/floor (white, beige, brown, any color) - count approximate number and describe locations
+- **ALL small particles** on seats (in seams, perforations, on surface) - describe each location
+- **ALL fine dust particles** on dashboard, console, and all surfaces - describe distribution
+- **ALL specks and debris** in crevices, between seats, under seats - describe locations
+- **ALL embedded particles** in carpet fibers - describe areas affected
+- **ALL particles** in seat seams, stitching, and perforations - describe each location
+- **ALL small debris** in cupholders, storage areas, door pockets - describe contents
+- **ALL particles** on floor mats (on surface AND between ridges/grooves) - describe locations
+- **ALL fine particles** on threshold areas, door sills - describe locations
+- **ALL crumbs and particles** around seat rails, bolts, and mechanical parts - describe locations
+
+**LARGER ITEMS (ALSO CRITICAL):**
+- Fast food bags and packaging on seats or floor
+- Empty or full beverage containers (cups, bottles) in cupholders or floor
+- Food wrappers, candy wrappers, napkins (location by location)
+- Trash items on floor, seats, or dashboard
+- Papers, documents, receipts scattered around
+- Dust and dirt accumulation on dashboard
+- Dirt on floor mats and carpeting
+- Sticky residue or stains on seats, steering wheel, or dashboard
+- Mud or dirt on pedals
+- Grime around door handles and windows
+- Foggy or smudged windows (interior condensation / dust on glass)
+- Spills on seats or floor (dried or wet)
+- Pet hair (on seats and in corners)
+- Unorganized items in cupholders, door pockets, console
+- Visible personal items scattered (keys, phones, sunglasses, etc.)
+- Hanging air freshener or decorations (if shabby or needs replacement)
+- Grease or grime on steering wheel
+- Dirty or stained seat belts
+- Debris between seats (pennies, crumbs, trash)
+- Visible odor indicators (if noticeable in image)
+- Coffee stains or beverage spills on fabric
+- Scratches or scuffs on dashboard
+- Fogged glass or condensation on windows
+- Dirty visor or headliner spots
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed. Pay EXTRA attention to small particles, crumbs, and miettes - they must ALL be identified and removed.
+
+## 7. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position (on steering wheel / hanging from mirror / mounted on dashboard / in center console / door pocket containing)
+- Size, orientation, and attachment method
+- Why it should stay (functional, decorative, safety feature)
+
+**Specific examples - PRESERVE THESE**:
+- Steering wheel (exact angle and position)
+- Dashboard layout and all permanent fixtures
+- Seats and headrests (exact positions, recline angles)
+- Seat belt systems (exact positions and routing)
+- Air vents and their orientation
+- Steering column (extended/retracted position)
+- Rearview mirror (angle and position)
+- Side mirrors (angle and position)
+- Gear shift (exact position)
+- Parking brake position
+- Steering wheel horn pad and controls
+- Steering wheel spokes (exact positioning)
+- Dashboard warning lights and indicator locations
+- Infotainment screen (exact position and size)
+- Climate control dials/buttons (exact state)
+- Window switches and door controls
+- Armrests (exact position and state - up/down)
+- Console storage (position and state)
+- Cupholder positions and orientation
+- Door handle shapes and positions
+- Window trim and bezels
+- Roof handle grab handles (exact positions)
+- Fasteners and screws visible
+- Door pockets and their orientation
+- Seatbelt anchors and routing
+- ISOFIX child seat anchors (if visible)
+- Air bag covers (exact positions)
+- Pedal design and positioning
+- Carpet edge binding and stitching patterns
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only organization/cleanliness can change.
+
+## 8. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design theme (sporty / luxury / minimalist / practical / tech-forward / classic / rugged)
+- Era/generation of car (modern 2020+ / recent 2015-2020 / older 2010-2015 / classic)
+- Mood and ambiance (premium/luxurious / practical/functional / sporty / cozy)
+- Quality level indicated by materials (luxury / mid-range / budget)
+- Technology level visible (modern touch screen / physical buttons / mix)
+- Customization level: stock / personalized / heavily modified
+- Cultural/regional characteristics (if applicable)
+
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
+
+    "car-seats": `## 2. CAR SEATS STRUCTURE (CRITICAL)
+
+### Seating Configuration:
+- Seating type: 2-seater / 4-seater / 5-seater / 7-seater
+- Seat arrangement (bucket seats / bench seats / captain's chairs)
+- Front seat positions: reclined angle, distance forward/backward from steering wheel
+- Rear seat configuration: folded / deployed / split-folding status
+- Headrest positions: up / down / missing
+- Seat orientation (forward / backward / rotated)
+- Which seats are visible: driver / passenger / rear / all
+
+### Seat Details:
+- Seat material: leather / fabric / suede / Alcantara / vinyl
+- Seat color: exact shade [e.g., "charcoal gray", "cream leather", "black suede"]
+- Stitching pattern: color, density, style
+- Seat adjustments visible: lumbar support, side bolsters, heating/cooling controls
+- Seat condition: new / slightly worn / heavily worn / damaged areas
+
+## 3. MATERIALS & TEXTURES (CRITICAL - PRESERVE EXACTLY)
+
+For EACH visible seat surface, specify:
+- Material type: leather / fabric / suede / Alcantara / vinyl
+- Material finish: matte / glossy / satin
+- Grain pattern (for leather)
+- Weave type (for fabric): velvet / mesh / suede / polyester / cotton
+- Texture details: pile height, smoothness, embossing
+- Stitching: color, pattern, density (tight / loose), where visible
+- Any wear patterns or creases
+
+⚠️ CRITICAL: Materials must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Natural light source: sunlight angle (from windows / sunroof)
+- Sunlight intensity: bright / moderate / dim / none
+- Shadows on seats: positions, softness
+- Ambient cabin lighting: off / on / LED ambient lighting color
+- Color temperature of light overall: warm (afternoon sun) / cool (overcast) / artificial
+- Overall brightness level: bright cabin / dark cabin / medium
+
+## 5. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Seat color: exact shade and undertone [warm / cool / neutral]
+- Stitching color: exact shade
+- Accent colors: any contrasting elements
+- Warm vs cool tones balance: percentage warm vs cool
+- Saturation levels: vibrant / muted / neutral
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 6. CLUTTER & MESS IN CAR (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the seats messy. For EACH item, specify:
+- Item type and description
+- EXACT location (on seat / under seat / between cushions / in seat crevices)
+- Size and quantity
+- Condition (dirty, sticky, scattered, trash, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Food debris on cushions or between cushions
+- Beverage spills or stains (coffee, wine, juice, water)
+- Crumbs scattered on fabric
+- Sticky residue from spills
+- Dirt and dust accumulation on seat surfaces
+- Pet hair and dander (significant amounts)
+- Visible stains on seat fabric/leather
+- Crumbs and debris in seat crevices
+- Dirt on seat belts
+- Stains of unknown origin
+- Ring marks from glasses or cups
+- Makeup stains (lipstick, foundation, etc.)
+- Ink or pen marks
+- General grime and dullness
+- Visible odor indicators (if noticeable in image)
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 7. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position and orientation
+- Size, color, style, and material
+- Why it should stay (functional, decorative, safety feature)
+
+**Specific examples - PRESERVE THESE**:
+- Seat structure: frame, legs, armrests (exact positions and design)
+- Seat fabric: material type, color, pattern, texture (PRESERVE - just clean)
+- Cushion structure: back cushions, seat cushions (PRESERVE - just clean)
+- Headrest positions and design
+- Seat belt systems (exact positions and routing)
+- Seat adjustments: lumbar support, side bolsters (exact state)
+- Any built-in features: heating/cooling controls, storage (exact state PRESERVE)
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.
+
+## 8. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design theme (sporty / luxury / minimalist / practical / tech-forward / classic / rugged)
+- Era/generation of car (modern 2020+ / recent 2015-2020 / older 2010-2015 / classic)
+- Mood and ambiance (premium/luxurious / practical/functional / sporty / cozy)
+- Quality level indicated by materials (luxury / mid-range / budget)
+
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
+
+    "car-dashboard": `## 2. CAR DASHBOARD STRUCTURE (CRITICAL)
+
+### Dashboard Layout:
+- Dashboard shape and layout (angular / curved / multi-tier)
+- Dashboard features visible: instrument cluster, infotainment screen, air vents, cup holders, storage cubbies
+- Steering wheel size, design style, material (leather / fabric / grip material)
+- Steering wheel angle: straight / tilted up / tilted down
+- Steering column: extended / retracted
+- Center console layout and contents visible
+- Gear shift position and style
+- Parking brake position
+
+### Interior Elements:
+- Door panels design: smooth / textured / with armrests / pockets visible
+- Windows: tinted level (clear / lightly tinted / heavily tinted / privacy tinted)
+- Visible through windows: exterior background (highway / parking / street / garage)
+- Dashboard reflection on windshield (if visible)
+
+## 3. MATERIALS & TEXTURES (CRITICAL - PRESERVE EXACTLY)
+
+For EACH visible surface, specify:
+- Dashboard material: plastic / leather / suede / wood / carbon fiber
+- Dashboard finish: glossy / matte / soft-touch
+- Texture patterns: grain, embossing, texture details
+- Steering wheel material: leather / fabric / plastic
+- Steering wheel grip texture and design
+- Center console materials and finishes
+- Door panel materials and textures
+- Any wood, metal, or carbon fiber trim details
+
+⚠️ CRITICAL: Materials must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Natural light source: sunlight angle (from windshield / side windows)
+- Sunlight intensity: bright / moderate / dim / none
+- Shadows cast by steering wheel on dashboard
+- Ambient cabin lighting: off / on / LED ambient lighting color
+- Dashboard illumination: off / on / brightness level
+- Screen glow from infotainment system (if on)
+- Color temperature of light overall: warm (afternoon sun) / cool (overcast) / artificial
+- Window reflections: clear / mirror-like / reflective glare
+- Windshield glare intensity
+- Overall brightness level: bright cabin / dark cabin / medium
+
+## 5. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Dashboard color: exact shade and finish description
+- Steering wheel color: exact shade and accent colors (if any)
+- Door panel color: exact shade
+- Accent colors: chrome details, wood trim, screen colors, etc.
+- Warm vs cool tones balance: percentage warm vs cool
+- Saturation levels: vibrant / muted / neutral
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 6. CLUTTER & MESS IN CAR (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the dashboard messy. For EACH item, specify:
+- Item type and description
+- EXACT location (on dashboard / in cupholders / on steering wheel / in center console)
+- Size and quantity
+- Condition (dirty, sticky, scattered, trash, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Dust and dirt accumulation on dashboard
+- Fingerprints and smudges on steering wheel, screens, and controls
+- Trash items on dashboard or in cupholders
+- Papers, documents, receipts scattered
+- Beverage containers in cupholders
+- Sticky residue on surfaces
+- Grease or grime on steering wheel
+- Foggy or smudged windows (interior condensation / dust on glass)
+- Visible personal items scattered (keys, phones, sunglasses, etc.)
+- Hanging air freshener or decorations (if shabby or needs replacement)
+- Coffee stains or beverage spills
+- Scratches or scuffs on dashboard
+- Dirt around air vents and controls
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 7. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position (on steering wheel / mounted on dashboard / in center console)
+- Size, orientation, and attachment method
+- Why it should stay (functional, decorative, safety feature)
+
+**Specific examples - PRESERVE THESE**:
+- Steering wheel (exact angle and position)
+- Dashboard layout and all permanent fixtures
+- Instrument cluster (exact position and design)
+- Infotainment screen (exact position and size)
+- Air vents and their orientation
+- Climate control dials/buttons (exact state)
+- Window switches and door controls
+- Center console layout and storage positions
+- Cupholder positions and orientation
+- Gear shift (exact position)
+- Parking brake position
+- All dashboard warning lights and indicator locations
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only organization/cleanliness can change.
+
+## 8. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design theme (sporty / luxury / minimalist / practical / tech-forward / classic / rugged)
+- Era/generation of car (modern 2020+ / recent 2015-2020 / older 2010-2015 / classic)
+- Mood and ambiance (premium/luxurious / practical/functional / sporty / cozy)
+- Quality level indicated by materials (luxury / mid-range / budget)
+- Technology level visible (modern touch screen / physical buttons / mix)
+
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
+
+    "car-trunk": `## 2. CAR TRUNK STRUCTURE (CRITICAL)
+
+### Trunk Layout:
+- Trunk dimensions and shape
+- Floor material: carpet / plastic / rubber mat / exposed metal
+- Side panels: material, color, texture
+- Trunk lid interior: material, color, finish
+- Spare tire: visible / hidden / absent
+- Storage compartments: positions, sizes, materials
+- Trunk lighting: position, type, on/off state
+
+### Visible Elements:
+- Trunk opening: size, shape
+- Hinges and mechanisms: positions, types
+- Carpet/flooring condition: new / worn / damaged
+- Any cargo area features
+
+## 3. MATERIALS & TEXTURES (CRITICAL - PRESERVE EXACTLY)
+
+For EACH visible surface, specify:
+- Floor material: carpet / plastic / rubber / metal
+- Floor texture and pattern
+- Side panel materials: plastic / fabric / carpet
+- Trunk lid interior material and finish
+- Any visible structural elements
+
+⚠️ CRITICAL: Materials must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Natural light source: sunlight angle (from trunk opening)
+- Sunlight intensity: bright / moderate / dim / none
+- Trunk lighting: on / off, position, color temperature
+- Shadows: positions, softness
+- Overall brightness level: bright / dark / medium
+
+## 5. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Floor color: exact shade
+- Side panel colors: exact shades
+- Trunk lid interior color: exact shade
+- Overall color scheme: warm / cool / neutral
+- Saturation levels: vibrant / muted / neutral
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 6. CLUTTER & MESS IN TRUNK (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the trunk messy. For EACH item, specify:
+- Item type and description
+- EXACT location (on floor / in corners / in storage compartments)
+- Size and quantity
+- Condition (dirty, sticky, scattered, trash, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Trash items and debris
+- Dirt and dust accumulation
+- Stains on carpet or surfaces
+- Visible personal items scattered
+- Spills or moisture marks
+- Odor indicators (if noticeable in image)
+- Loose items not properly stored
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 7. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position
+- Size, color, style, and material
+- Why it should stay (functional, decorative, safety feature)
+
+**Specific examples - PRESERVE THESE**:
+- Trunk structure: floor, side panels, lid interior (exact design PRESERVE)
+- Spare tire (if visible and properly stored)
+- Storage compartments (exact positions and design)
+- Trunk lighting (exact position and type)
+- Any permanent fixtures or equipment
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.
+
+## 8. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design theme (practical / organized / utilitarian)
+- Quality level indicated by materials (luxury / mid-range / budget)
+- Condition baseline: new / slightly worn / heavily worn
+
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
+
+    "sofa": `## 2. SOFA STRUCTURE & DESIGN (CRITICAL)
+
+### Sofa Type & Configuration:
+- Sofa style: sectional / modular / straight / curved / L-shaped / U-shaped / chaise lounge / sleeper sofa
+- Sofa size: 2-seater / 3-seater / 4-seater / XL / oversized
+- Sectional configuration (if applicable): left-facing / right-facing / neutral
+- Chaise position (if applicable): left / right / detachable
+- Back style: high back / low back / no back / adjustable / pillow back
+- Arm design: rolled / straight / low / high / with storage / wingback
+- Legs: visible / hidden / metal / wood / upholstered / height
+- Cushion type: down-filled / foam / memory foam / combination / firm / soft / sink-in
+- Cushion count: number of seat cushions visible
+- Back cushion arrangement: attached / removable / number of cushions
+- Throw pillows: count, size, arrangement, placement
+- Throw blanket: present / folded / draped / color / material / texture
+- Sofa condition baseline: new / slightly worn / heavily worn / damaged areas
+
+### Sofa Placement:
+- Room positioning: against wall / floating / in corner / facing TV / facing fireplace
+- Distance from walls: exact measurements (inches from walls)
+- Orientation: facing forward / angled / parallel to wall
+- Relationship to other furniture: distance to coffee table / entertainment center / other seating
+
+## 3. SOFA MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
+
+### Upholstery Material:
+- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
+- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
+- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
+- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
+- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
+- Fabric finish: matte / glossy / satin / brushed
+- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
+- Stitching details: color, pattern, density, visible seams
+- Piping or trim: color, material, style, locations
+- Embellishments: buttons, tufting, nailhead trim, other decorative details
+
+### Cushions & Pillows:
+- Back cushions: material, fill, color, pattern, firmness
+- Seat cushions: material, fill, color, pattern, firmness
+- Throw pillows: count each pillow separately
+  - Pillow 1: color, pattern, size, texture, material, exact position
+  - Pillow 2: color, pattern, size, texture, material, exact position
+  - [etc. for all pillows]
+- Pillow covers: removable / fixed / zipper visible / material
+
+### Other Elements:
+- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape
+- Piping color and material: contrasting / matching / metallic
+- Nail heads (if applicable): color, spacing, overall aesthetic impact
+
+⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. SOFA CLEANLINESS BASELINE (DETAILED ASSESSMENT)
+
+Document the CURRENT state of sofa before cleaning:
+- Overall sofa appearance: pristine / clean / slightly soiled / heavily soiled / very dirty
+- Visible stains: locations, types (food / drink / dirt / pet / unknown), size, darkness level
+- Dust and dirt: general accumulation level, where concentrated
+- Pilling: fabric pilling level (none / light / moderate / heavy)
+- Odor indicators (if visible): freshness / staleness indication
+- Pet hair: presence level (none / light / moderate / heavy), distribution
+- Wrinkles and creases: natural from sitting / extra wrinkled / pressed appearance
+- Color vibrancy: bright / slightly faded / significantly faded / discolored
+- Shine level: matte / slightly shiny / very shiny (sweat marks)
+- Overall maintenance level: well-maintained / neglected / mixed
+
+## 5. ROOM CONTEXT (CRITICAL FOR LIVING ROOM FULL)
+
+If visible in the image:
+- Wall color and finish
+- Floor type and color
+- Other furniture: coffee table (material, color, style), TV stand, bookshelf, chairs, etc.
+- Decor items: artwork, mirrors, plants, lamps, rugs, throws
+- Windows: visible / curtains / blinds / natural light amount
+- Doors: visible location and style
+- Room size impression: small / medium / large / spacious
+- Design style: modern / traditional / eclectic / minimalist / rustic / contemporary
+- Color scheme: warm / cool / neutral / multi-colored
+
+## 6. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Primary light source: natural (windows / daylight) / artificial (overhead lights / lamps) / combination
+- Light direction and angle: warm afternoon sun / cool morning light / harsh midday / soft artificial
+- Shadows on sofa: shadow positions, lengths, softness, what casts them
+- Reflections: on sofa surface, in room windows or mirrors
+- Overall brightness: bright / medium / dim / moody
+- Color temperature: warm (yellowish) / cool (bluish) / neutral
+- Time of day impression (if applicable): morning / afternoon / evening
+- Mood created by lighting: energetic / cozy / dramatic / neutral
+- Any glare or hotspots on fabric
+
+## 7. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Sofa primary color: exact shade and undertone [warm / cool / neutral]
+- Sofa secondary colors (if patterned): all colors in pattern and approximate percentages
+- Throw pillow colors: individually for each pillow
+- Throw blanket color: exact shade
+- Room wall colors: if visible
+- Floor color: if visible
+- Other furniture colors: if visible
+- Accent colors: metallics, trim, piping colors
+- Overall color harmony: monochromatic / complementary / analogous / triadic
+- Warm vs cool balance of entire scene
+- Saturation levels: vibrant / muted / neutral / washed out
+- Any color fading or discoloration patterns
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 8. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the sofa/room messy. For EACH item, specify:
+- Item type and description
+- EXACT location on sofa or in room (left armrest / center cushion / right corner / floor beneath / coffee table / etc.)
+- Size and quantity
+- Condition (dirty, sticky, wrinkled, scattered, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Food debris on cushions or between cushions
+- Beverage spills or stains (coffee, wine, juice, water)
+- Crumbs scattered on fabric
+- Sticky residue from spills
+- Dirt and dust accumulation on surfaces and between cushions
+- Pet hair and dander (significant amounts)
+- Pilling and fabric wear showing
+- Visible wrinkles and creases (other than natural sitting wrinkles)
+- Fallen throw pillow stuffing or fibers
+- Loose threads or tears in fabric
+- Faded spots from sun exposure or uneven cleaning
+- Odor indicators (visible moisture / discoloration suggesting odor)
+- Stains of unknown origin
+- Ring marks from glasses or cups
+- Makeup stains (lipstick, foundation, etc.)
+- Ink or pen marks
+- Chewing gum or adhesive residue
+- General grime and dullness
+- Cushion indentation that won't recover
+- Unraveling seams
+- Discolored piping or trim
+- Dusty or dirty throw blanket (if present)
+- Soiled throw pillows
+- Clutter on sofa surface (remote controls, phones, magazines, books, toys, etc.)
+- Items under sofa visible (dust bunnies, lost items, debris)
+- Disorganized throw pillows (scattered instead of arranged)
+- Room clutter affecting presentation (visible mess on coffee table, floor, etc.)
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 9. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position and arrangement
+- Size, color, style, and material
+- Why it should stay
+
+**Specific examples - PRESERVE THESE**:
+- Sofa structure: frame, legs, armrests (exact positions and design)
+- Sofa fabric: material type, color, pattern, texture (PRESERVE - just clean)
+- Cushion structure: back cushions, seat cushions (PRESERVE - just clean)
+- Throw pillows: exact count, arrangement, colors, patterns (PRESERVE - just clean)
+- Throw blanket: fold/drape arrangement (if intentional), color (PRESERVE - just clean)
+- Sofa legs: exact material, color, style, visible wear patterns (PRESERVE as-is)
+- Piping and trim: exact color and placement (PRESERVE - just clean)
+- Any built-in features: recliners, storage, cup holders (exact state PRESERVE)
+- Room furniture positions: coffee table, TV stand, other seating (EXACT positions PRESERVE)
+- Decor items: artwork, plants, lamps (EXACT positions PRESERVE)
+- Rug or carpet under sofa (exact placement and pattern PRESERVE)
+- Any damage that's structural: worn spots, faded areas (acceptable if not "dirty")
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
+
+    "sofa-living-room": `## 2. SOFA STRUCTURE & DESIGN (CRITICAL)
+
+### Sofa Type & Configuration:
+- Sofa style: sectional / modular / straight / curved / L-shaped / U-shaped / chaise lounge / sleeper sofa
+- Sofa size: 2-seater / 3-seater / 4-seater / XL / oversized
+- Sectional configuration (if applicable): left-facing / right-facing / neutral
+- Chaise position (if applicable): left / right / detachable
+- Back style: high back / low back / no back / adjustable / pillow back
+- Arm design: rolled / straight / low / high / with storage / wingback
+- Legs: visible / hidden / metal / wood / upholstered / height
+- Cushion type: down-filled / foam / memory foam / combination / firm / soft / sink-in
+- Cushion count: number of seat cushions visible
+- Back cushion arrangement: attached / removable / number of cushions
+- Throw pillows: count, size, arrangement, placement
+- Throw blanket: present / folded / draped / color / material / texture
+- Sofa condition baseline: new / slightly worn / heavily worn / damaged areas
+
+### Sofa Placement:
+- Room positioning: against wall / floating / in corner / facing TV / facing fireplace
+- Distance from walls: exact measurements (inches from walls)
+- Orientation: facing forward / angled / parallel to wall
+- Relationship to other furniture: distance to coffee table / entertainment center / other seating
+
+## 3. SOFA MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
+
+### Upholstery Material:
+- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
+- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
+- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
+- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
+- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
+- Fabric finish: matte / glossy / satin / brushed
+- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
+- Stitching details: color, pattern, density, visible seams
+- Piping or trim: color, material, style, locations
+- Embellishments: buttons, tufting, nailhead trim, other decorative details
+
+### Cushions & Pillows:
+- Back cushions: material, fill, color, pattern, firmness
+- Seat cushions: material, fill, color, pattern, firmness
+- Throw pillows: count each pillow separately
+  - Pillow 1: color, pattern, size, texture, material, exact position
+  - Pillow 2: color, pattern, size, texture, material, exact position
+  - [etc. for all pillows]
+- Pillow covers: removable / fixed / zipper visible / material
+
+### Other Elements:
+- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape
+- Piping color and material: contrasting / matching / metallic
+- Nail heads (if applicable): color, spacing, overall aesthetic impact
+
+⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. SOFA CLEANLINESS BASELINE (DETAILED ASSESSMENT)
+
+Document the CURRENT state of sofa before cleaning:
+- Overall sofa appearance: pristine / clean / slightly soiled / heavily soiled / very dirty
+- Visible stains: locations, types (food / drink / dirt / pet / unknown), size, darkness level
+- Dust and dirt: general accumulation level, where concentrated
+- Pilling: fabric pilling level (none / light / moderate / heavy)
+- Odor indicators (if visible): freshness / staleness indication
+- Pet hair: presence level (none / light / moderate / heavy), distribution
+- Wrinkles and creases: natural from sitting / extra wrinkled / pressed appearance
+- Color vibrancy: bright / slightly faded / significantly faded / discolored
+- Shine level: matte / slightly shiny / very shiny (sweat marks)
+- Overall maintenance level: well-maintained / neglected / mixed
+
+## 5. ROOM CONTEXT (CRITICAL FOR LIVING ROOM FULL)
+
+If visible in the image:
+- Wall color and finish
+- Floor type and color
+- Other furniture: coffee table (material, color, style), TV stand, bookshelf, chairs, etc.
+- Decor items: artwork, mirrors, plants, lamps, rugs, throws
+- Windows: visible / curtains / blinds / natural light amount
+- Doors: visible location and style
+- Room size impression: small / medium / large / spacious
+- Design style: modern / traditional / eclectic / minimalist / rustic / contemporary
+- Color scheme: warm / cool / neutral / multi-colored
+
+## 6. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Primary light source: natural (windows / daylight) / artificial (overhead lights / lamps) / combination
+- Light direction and angle: warm afternoon sun / cool morning light / harsh midday / soft artificial
+- Shadows on sofa: shadow positions, lengths, softness, what casts them
+- Reflections: on sofa surface, in room windows or mirrors
+- Overall brightness: bright / medium / dim / moody
+- Color temperature: warm (yellowish) / cool (bluish) / neutral
+- Time of day impression (if applicable): morning / afternoon / evening
+- Mood created by lighting: energetic / cozy / dramatic / neutral
+- Any glare or hotspots on fabric
+
+## 7. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Sofa primary color: exact shade and undertone [warm / cool / neutral]
+- Sofa secondary colors (if patterned): all colors in pattern and approximate percentages
+- Throw pillow colors: individually for each pillow
+- Throw blanket color: exact shade
+- Room wall colors: if visible
+- Floor color: if visible
+- Other furniture colors: if visible
+- Accent colors: metallics, trim, piping colors
+- Overall color harmony: monochromatic / complementary / analogous / triadic
+- Warm vs cool balance of entire scene
+- Saturation levels: vibrant / muted / neutral / washed out
+- Any color fading or discoloration patterns
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 8. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the sofa/room messy. For EACH item, specify:
+- Item type and description
+- EXACT location on sofa or in room (left armrest / center cushion / right corner / floor beneath / coffee table / etc.)
+- Size and quantity
+- Condition (dirty, sticky, wrinkled, scattered, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Food debris on cushions or between cushions
+- Beverage spills or stains (coffee, wine, juice, water)
+- Crumbs scattered on fabric
+- Sticky residue from spills
+- Dirt and dust accumulation on surfaces and between cushions
+- Pet hair and dander (significant amounts)
+- Pilling and fabric wear showing
+- Visible wrinkles and creases (other than natural sitting wrinkles)
+- Fallen throw pillow stuffing or fibers
+- Loose threads or tears in fabric
+- Faded spots from sun exposure or uneven cleaning
+- Odor indicators (visible moisture / discoloration suggesting odor)
+- Stains of unknown origin
+- Ring marks from glasses or cups
+- Makeup stains (lipstick, foundation, etc.)
+- Ink or pen marks
+- Chewing gum or adhesive residue
+- General grime and dullness
+- Cushion indentation that won't recover
+- Unraveling seams
+- Discolored piping or trim
+- Dusty or dirty throw blanket (if present)
+- Soiled throw pillows
+- Clutter on sofa surface (remote controls, phones, magazines, books, toys, etc.)
+- Items under sofa visible (dust bunnies, lost items, debris)
+- Disorganized throw pillows (scattered instead of arranged)
+- Room clutter affecting presentation (visible mess on coffee table, floor, etc.)
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 9. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position and arrangement
+- Size, color, style, and material
+- Why it should stay
+
+**Specific examples - PRESERVE THESE**:
+- Sofa structure: frame, legs, armrests (exact positions and design)
+- Sofa fabric: material type, color, pattern, texture (PRESERVE - just clean)
+- Cushion structure: back cushions, seat cushions (PRESERVE - just clean)
+- Throw pillows: exact count, arrangement, colors, patterns (PRESERVE - just clean)
+- Throw blanket: fold/drape arrangement (if intentional), color (PRESERVE - just clean)
+- Sofa legs: exact material, color, style, visible wear patterns (PRESERVE as-is)
+- Piping and trim: exact color and placement (PRESERVE - just clean)
+- Any built-in features: recliners, storage, cup holders (exact state PRESERVE)
+- Room furniture positions: coffee table, TV stand, other seating (EXACT positions PRESERVE)
+- Decor items: artwork, plants, lamps (EXACT positions PRESERVE)
+- Rug or carpet under sofa (exact placement and pattern PRESERVE)
+- Any damage that's structural: worn spots, faded areas (acceptable if not "dirty")
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
+
+    "living-room-full": `## 2. LIVING ROOM STRUCTURE
+
+- Room dimensions and layout
+- Seating arrangement: positions, configuration
+- Windows: positions, sizes, types, treatments
+- Doors: positions, types
+- Fireplace: if present, type, material, position
+- Built-in features (shelves, entertainment center)
+
+## 3. SOFA STRUCTURE & DESIGN (CRITICAL)
+
+### Sofa Type & Configuration:
+- Sofa style: sectional / modular / straight / curved / L-shaped / U-shaped / chaise lounge / sleeper sofa
+- Sofa size: 2-seater / 3-seater / 4-seater / XL / oversized
+- Sectional configuration (if applicable): left-facing / right-facing / neutral
+- Chaise position (if applicable): left / right / detachable
+- Back style: high back / low back / no back / adjustable / pillow back
+- Arm design: rolled / straight / low / high / with storage / wingback
+- Legs: visible / hidden / metal / wood / upholstered / height
+- Cushion type: down-filled / foam / memory foam / combination / firm / soft / sink-in
+- Cushion count: number of seat cushions visible
+- Back cushion arrangement: attached / removable / number of cushions
+- Throw pillows: count, size, arrangement, placement
+- Throw blanket: present / folded / draped / color / material / texture
+- Sofa condition baseline: new / slightly worn / heavily worn / damaged areas
+
+### Sofa Placement:
+- Room positioning: against wall / floating / in corner / facing TV / facing fireplace
+- Distance from walls: exact measurements (inches from walls)
+- Orientation: facing forward / angled / parallel to wall
+- Relationship to other furniture: distance to coffee table / entertainment center / other seating
+
+## 4. SOFA MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
+
+### Upholstery Material:
+- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
+- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
+- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
+- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
+- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
+- Fabric finish: matte / glossy / satin / brushed
+- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
+- Stitching details: color, pattern, density, visible seams
+- Piping or trim: color, material, style, locations
+- Embellishments: buttons, tufting, nailhead trim, other decorative details
+
+### Cushions & Pillows:
+- Back cushions: material, fill, color, pattern, firmness
+- Seat cushions: material, fill, color, pattern, firmness
+- Throw pillows: count each pillow separately
+  - Pillow 1: color, pattern, size, texture, material, exact position
+  - Pillow 2: color, pattern, size, texture, material, exact position
+  - [etc. for all pillows]
+- Pillow covers: removable / fixed / zipper visible / material
+
+### Other Elements:
+- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape
+- Piping color and material: contrasting / matching / metallic
+- Nail heads (if applicable): color, spacing, overall aesthetic impact
+
+⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 5. SURFACES & MATERIALS
+
+- Floor: material (carpet / wood / tile), pattern, condition
+- Walls: material, color, finish
+- Ceiling: material, finish
+- Window treatments: types, colors, styles
+
+## 6. FURNITURE & DECOR
+
+- Seating: sofas, chairs, positions, sizes, materials, colors
+- Tables: coffee table, side tables, positions, materials
+- Entertainment: TV, speakers, positions
+- Storage: shelves, cabinets, materials, styles
+- Decorative items: art, plants, accessories
+
+## 7. LIGHTING ANALYSIS
+
+- Natural light: windows, direction, intensity
+- Artificial light: ceiling lights, floor lamps, table lamps, styles
+- Overall brightness and mood`,
+
+    "armchair": `## 2. ARMCHAIR STRUCTURE & DESIGN (CRITICAL)
+
+### Armchair Type & Configuration:
+- Armchair style: wingback / recliner / accent / swivel / club / modern / traditional
+- Armchair size: small / medium / large / oversized
+- Back style: high back / low back / no back / adjustable
+- Arm design: rolled / straight / low / high / wingback
+- Legs: visible / hidden / metal / wood / upholstered / height
+- Cushion type: down-filled / foam / memory foam / combination / firm / soft
+- Back cushion: attached / removable / none
+- Throw pillow: present / absent / color / material / position
+- Throw blanket: present / folded / draped / color / material / texture
+- Armchair condition baseline: new / slightly worn / heavily worn / damaged areas
+
+### Armchair Placement:
+- Room positioning: against wall / floating / in corner / next to window
+- Distance from walls: exact measurements
+- Orientation: facing forward / angled / rotated
+- Relationship to other furniture: distance to side table / lamp / other seating
+
+## 3. ARMCHAIR MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
+
+### Upholstery Material:
+- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
+- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
+- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
+- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
+- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
+- Fabric finish: matte / glossy / satin / brushed
+- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
+- Stitching details: color, pattern, density, visible seams
+- Piping or trim: color, material, style, locations
+- Embellishments: buttons, tufting, nailhead trim, other decorative details
+
+### Cushions & Pillows:
+- Seat cushion: material, fill, color, pattern, firmness
+- Back cushion: material, fill, color, pattern, firmness (if present)
+- Throw pillow: color, pattern, size, texture, material, exact position (if present)
+
+### Other Elements:
+- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape (if present)
+- Piping color and material: contrasting / matching / metallic
+- Nail heads (if applicable): color, spacing, overall aesthetic impact
+
+⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. ARMCHAIR CLEANLINESS BASELINE (DETAILED ASSESSMENT)
+
+Document the CURRENT state of armchair before cleaning:
+- Overall armchair appearance: pristine / clean / slightly soiled / heavily soiled / very dirty
+- Visible stains: locations, types (food / drink / dirt / pet / unknown), size, darkness level
+- Dust and dirt: general accumulation level, where concentrated
+- Pilling: fabric pilling level (none / light / moderate / heavy)
+- Odor indicators (if visible): freshness / staleness indication
+- Pet hair: presence level (none / light / moderate / heavy), distribution
+- Wrinkles and creases: natural from sitting / extra wrinkled / pressed appearance
+- Color vibrancy: bright / slightly faded / significantly faded / discolored
+- Shine level: matte / slightly shiny / very shiny (sweat marks)
+- Overall maintenance level: well-maintained / neglected / mixed
+
+## 5. ROOM CONTEXT
+
+If visible in the image:
+- Wall color and finish
+- Floor type and color
+- Other furniture: side table, lamp, other seating, etc.
+- Decor items: artwork, mirrors, plants, rugs
+- Windows: visible / curtains / blinds / natural light amount
+- Room size impression: small / medium / large / spacious
+- Design style: modern / traditional / eclectic / minimalist / rustic / contemporary
+- Color scheme: warm / cool / neutral / multi-colored
+
+## 6. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Primary light source: natural (windows / daylight) / artificial (overhead lights / lamps) / combination
+- Light direction and angle: warm afternoon sun / cool morning light / harsh midday / soft artificial
+- Shadows on armchair: shadow positions, lengths, softness, what casts them
+- Reflections: on armchair surface, in room windows or mirrors
+- Overall brightness: bright / medium / dim / moody
+- Color temperature: warm (yellowish) / cool (bluish) / neutral
+- Time of day impression (if applicable): morning / afternoon / evening
+- Mood created by lighting: energetic / cozy / dramatic / neutral
+- Any glare or hotspots on fabric
+
+## 7. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Armchair primary color: exact shade and undertone [warm / cool / neutral]
+- Armchair secondary colors (if patterned): all colors in pattern and approximate percentages
+- Throw pillow color: exact shade (if present)
+- Throw blanket color: exact shade (if present)
+- Room wall colors: if visible
+- Floor color: if visible
+- Other furniture colors: if visible
+- Accent colors: metallics, trim, piping colors
+- Overall color harmony: monochromatic / complementary / analogous / triadic
+- Warm vs cool balance of entire scene
+- Saturation levels: vibrant / muted / neutral / washed out
+- Any color fading or discoloration patterns
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 8. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the sofa/room messy. For EACH item, specify:
+- Item type and description
+- EXACT location on sofa or in room
+- Size and quantity
+- Condition (dirty, sticky, wrinkled, scattered, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Food debris on cushions or between cushions
+- Beverage spills or stains
+- Crumbs scattered on fabric
+- Sticky residue from spills
+- Dirt and dust accumulation
+- Pet hair and dander
+- Pilling and fabric wear
+- Visible wrinkles and creases
+- Stains of unknown origin
+- Clutter on surfaces
+- Room clutter affecting presentation
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 9. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position and arrangement
+- Size, color, style, and material
+- Why it should stay
+
+**Specific examples - PRESERVE THESE**:
+- Sofa structure and fabric (PRESERVE - just clean)
+- Cushion structure (PRESERVE - just clean)
+- Throw pillows and blanket (PRESERVE - just clean)
+- Room furniture positions (EXACT positions PRESERVE)
+- Decor items (EXACT positions PRESERVE)
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
+
+    "armchair": `## 2. ARMCHAIR STRUCTURE & DESIGN (CRITICAL)
+
+### Armchair Type & Configuration:
+- Armchair style: wingback / recliner / accent / swivel / club / modern / traditional
+- Armchair size: small / medium / large / oversized
+- Back style: high back / low back / no back / adjustable
+- Arm design: rolled / straight / low / high / wingback
+- Legs: visible / hidden / metal / wood / upholstered / height
+- Cushion type: down-filled / foam / memory foam / combination / firm / soft
+- Back cushion: attached / removable / none
+- Throw pillow: present / absent / color / material / position
+- Throw blanket: present / folded / draped / color / material / texture
+- Armchair condition baseline: new / slightly worn / heavily worn / damaged areas
+
+### Armchair Placement:
+- Room positioning: against wall / floating / in corner / next to window
+- Distance from walls: exact measurements
+- Orientation: facing forward / angled / rotated
+- Relationship to other furniture: distance to side table / lamp / other seating
+
+## 3. ARMCHAIR MATERIALS & FABRIC (CRITICAL - PRESERVE EXACTLY)
+
+### Upholstery Material:
+- Fabric type: leather / microsuede / linen / velvet / polyester / cotton blend / performance fabric / synthetic
+- Leather type (if applicable): top-grain / full-grain / genuine / faux / nubuck / suede finish
+- Fabric color: exact shade [e.g., "charcoal gray", "cream", "deep navy", "warm taupe"]
+- Fabric pattern: solid / textured / striped / checkered / floral / geometric / plaid / other pattern (describe in detail)
+- Fabric weave: tight / loose / smooth / nubby / shaggy / chenille / velvet pile height
+- Fabric finish: matte / glossy / satin / brushed
+- Fabric condition baseline: clean / slightly stained / soiled / faded / pilled
+- Stitching details: color, pattern, density, visible seams
+- Piping or trim: color, material, style, locations
+- Embellishments: buttons, tufting, nailhead trim, other decorative details
+
+### Cushions & Pillows:
+- Seat cushion: material, fill, color, pattern, firmness
+- Back cushion: material, fill, color, pattern, firmness (if present)
+- Throw pillow: color, pattern, size, texture, material, exact position (if present)
+
+### Other Elements:
+- Throw blanket: material [wool / cotton / synthetic / chenille], color, weave pattern, drape (if present)
+- Piping color and material: contrasting / matching / metallic
+- Nail heads (if applicable): color, spacing, overall aesthetic impact
+
+⚠️ CRITICAL: Fabric must be preserved EXACTLY - only cleanliness should change appearance.
+
+## 4. ARMCHAIR CLEANLINESS BASELINE (DETAILED ASSESSMENT)
+
+Document the CURRENT state of armchair before cleaning:
+- Overall armchair appearance: pristine / clean / slightly soiled / heavily soiled / very dirty
+- Visible stains: locations, types (food / drink / dirt / pet / unknown), size, darkness level
+- Dust and dirt: general accumulation level, where concentrated
+- Pilling: fabric pilling level (none / light / moderate / heavy)
+- Odor indicators (if visible): freshness / staleness indication
+- Pet hair: presence level (none / light / moderate / heavy), distribution
+- Wrinkles and creases: natural from sitting / extra wrinkled / pressed appearance
+- Color vibrancy: bright / slightly faded / significantly faded / discolored
+- Shine level: matte / slightly shiny / very shiny (sweat marks)
+- Overall maintenance level: well-maintained / neglected / mixed
+
+## 5. ROOM CONTEXT
+
+If visible in the image:
+- Wall color and finish
+- Floor type and color
+- Other furniture: side table, lamp, other seating, etc.
+- Decor items: artwork, mirrors, plants, rugs
+- Windows: visible / curtains / blinds / natural light amount
+- Room size impression: small / medium / large / spacious
+- Design style: modern / traditional / eclectic / minimalist / rustic / contemporary
+- Color scheme: warm / cool / neutral / multi-colored
+
+## 6. LIGHTING & ATMOSPHERE (CRITICAL)
+
+- Primary light source: natural (windows / daylight) / artificial (overhead lights / lamps) / combination
+- Light direction and angle: warm afternoon sun / cool morning light / harsh midday / soft artificial
+- Shadows on armchair: shadow positions, lengths, softness, what casts them
+- Reflections: on armchair surface, in room windows or mirrors
+- Overall brightness: bright / medium / dim / moody
+- Color temperature: warm (yellowish) / cool (bluish) / neutral
+- Time of day impression (if applicable): morning / afternoon / evening
+- Mood created by lighting: energetic / cozy / dramatic / neutral
+- Any glare or hotspots on fabric
+
+## 7. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
+
+- Armchair primary color: exact shade and undertone [warm / cool / neutral]
+- Armchair secondary colors (if patterned): all colors in pattern and approximate percentages
+- Throw pillow color: exact shade (if present)
+- Throw blanket color: exact shade (if present)
+- Room wall colors: if visible
+- Floor color: if visible
+- Other furniture colors: if visible
+- Accent colors: metallics, trim, piping colors
+- Overall color harmony: monochromatic / complementary / analogous / triadic
+- Warm vs cool balance of entire scene
+- Saturation levels: vibrant / muted / neutral / washed out
+- Any color fading or discoloration patterns
+
+⚠️ CRITICAL: Colors must be preserved exactly - only cleanliness should change appearance.
+
+## 8. CLUTTER & MESS (TO BE REMOVED - BE THOROUGH)
+
+List ALL items that make the armchair/room messy. For EACH item, specify:
+- Item type and description
+- EXACT location on armchair or in room
+- Size and quantity
+- Condition (dirty, sticky, wrinkled, scattered, etc.)
+
+**Specific examples - REMOVE ALL OF THESE IF PRESENT**:
+- Food debris on cushions
+- Beverage spills or stains
+- Crumbs scattered on fabric
+- Sticky residue from spills
+- Dirt and dust accumulation
+- Pet hair and dander
+- Pilling and fabric wear
+- Visible wrinkles and creases
+- Stains of unknown origin
+- Clutter on armchair surface
+- Room clutter affecting presentation
+
+⚠️ CRITICAL: List EVERYTHING that needs to be removed - nothing should be missed.
+
+## 9. ELEMENTS TO PRESERVE (MUST STAY - EXACT POSITIONS)
+
+List items that should STAY exactly as they are. For EACH item, specify:
+- Item type and description
+- EXACT position and arrangement
+- Size, color, style, and material
+- Why it should stay
+
+**Specific examples - PRESERVE THESE**:
+- Armchair structure and fabric (PRESERVE - just clean)
+- Cushion structure (PRESERVE - just clean)
+- Throw pillow and blanket (PRESERVE - just clean)
+- Room furniture positions (EXACT positions PRESERVE)
+- Decor items (EXACT positions PRESERVE)
+
+⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
   };
 
   const commonSections = `## 6. COLOR PALETTE (CRITICAL - PRESERVE EXACT COLORS)
@@ -671,6 +1935,53 @@ ${commonSections}`;
   }
 
   const spaceSpecific = spaceSpecificPrompts[spaceType];
+  
+  // Pour les types car-* et sofa-*, ils ont déjà leurs propres sections 6-8
+  // On ajoute seulement les sections 9 et 10 finales
+  const isCarOrSofaType = 
+    spaceType.startsWith("car-") || 
+    spaceType === "sofa" || 
+    spaceType === "sofa-living-room" || 
+    spaceType === "living-room-full" || 
+    spaceType === "armchair";
+  
+  if (isCarOrSofaType) {
+    const finalSections = `## 9. ATMOSPHERE & STYLE (PRESERVE MOOD)
+
+- Overall design style (minimalist / maximalist / rustic / modern / traditional / industrial / etc.)
+- Era or time period feel (contemporary / vintage / classic / etc.)
+- Mood and ambiance (cozy / spacious / industrial / luxurious / etc.)
+- Cultural or regional characteristics (if visible)
+- Quality level (luxury / standard / budget)
+- Overall aesthetic coherence
+
+⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.
+
+## 10. FINAL VERIFICATION CHECKLIST
+
+Before completing your analysis, verify you have described:
+
+✓ EXACT camera angle and perspective
+✓ EXACT spatial layout and dimensions
+✓ EXACT positions of ALL furniture and objects
+✓ EXACT materials, colors, and patterns for ALL surfaces
+✓ EXACT lighting conditions and shadows
+✓ EXACT color palette and relationships
+✓ COMPLETE list of ALL clutter and mess to remove
+✓ COMPLETE list of ALL elements to preserve
+✓ EXACT atmosphere and style
+
+⚠️ CRITICAL: Be EXTREMELY precise with spatial relationships, measurements, colors, and positions. The goal is to describe this space so accurately that it can be recreated IDENTICALLY, just cleaned. Every detail matters.
+
+⚠️ CONSISTENCY: Use the same level of detail, same structure, and same precision every time you analyze this image. Your analysis should be deterministic and reproducible.`;
+    
+    return `${basePrompt}
+
+${spaceSpecific}
+
+${finalSections}`;
+  }
+  
   return `${basePrompt}
 
 ${spaceSpecific}
@@ -798,6 +2109,71 @@ export function getGenerationPrompt(
 ✓ Keep EXACT same ceiling height and type
 ✓ Keep EXACT same spatial relationships between all elements
 ✓ DO NOT change any structural elements`;
+      case "car-interior":
+      case "car-seats":
+      case "car-dashboard":
+      case "car-trunk":
+        return `### CAR-SPECIFIC PRESERVATION (CRITICAL - MOST IMPORTANT)
+✓ Keep EXACT same steering wheel angle, size, design, material, color
+✓ Keep EXACT same dashboard layout, shape, and all fixture positions
+✓ Keep EXACT same seat positions, recline angles, and orientations
+✓ Keep EXACT same seating arrangement (front/rear, bucket/bench)
+✓ Keep EXACT same color scheme of ALL interior elements
+✓ Keep EXACT same material types for seats, dashboard, panels (leather/fabric/plastic textures)
+✓ Keep EXACT same floor mat position, color, pattern, and material
+✓ Keep EXACT same headliner color and material
+✓ Keep EXACT same door panel layout and design
+✓ Keep EXACT same air vent positions and orientations
+✓ Keep EXACT same all dashboard features (buttons, screen, vents, cubbies)
+✓ Keep EXACT same center console layout and storage positions
+✓ Keep EXACT same rearview mirror and side mirror angles
+✓ Keep EXACT same all seat belt positions and routing
+✓ Keep EXACT same armrest positions and states
+✓ Keep EXACT same window tint level (clear/lightly/heavily tinted)
+✓ Keep EXACT same exterior view through windows (background preservation)
+✓ Keep EXACT same natural light direction from windows
+✓ Keep EXACT same interior ambient lighting state (on/off/color)
+✓ Keep EXACT same gear shift position and pedals visibility
+✓ DO NOT change steering wheel angle or position
+✓ DO NOT move or reposition any seats
+✓ DO NOT change seat fabric or material appearance
+✓ DO NOT change dashboard layout or features
+✓ DO NOT change interior color scheme
+✓ DO NOT change window tint or exterior background view
+✓ DO NOT add or remove any permanent fixtures`;
+      case "sofa":
+      case "sofa-living-room":
+      case "living-room-full":
+      case "armchair":
+        return `### SOFA-SPECIFIC PRESERVATION (CRITICAL - MOST IMPORTANT)
+✓ Keep EXACT same sofa style, size, and configuration
+✓ Keep EXACT same sofa frame shape and leg design
+✓ Keep EXACT same fabric type [leather/microsuede/linen/velvet/etc.] - DO NOT change material type
+✓ Keep EXACT same fabric color - DO NOT change hues
+✓ Keep EXACT same fabric pattern [if patterned] - preserve all pattern details
+✓ Keep EXACT same fabric texture and weave - preserve nubby/velvet/smooth finish
+✓ Keep EXACT same cushion configuration (back cushions, seat cushions)
+✓ Keep EXACT same throw pillow count and positions
+✓ Keep EXACT same throw pillow colors and patterns
+✓ Keep EXACT same throw pillow sizes and arrangements
+✓ Keep EXACT same throw blanket (if present) - color, material, drape/fold
+✓ Keep EXACT same piping, trim, and decorative details
+✓ Keep EXACT same armrest design and material
+✓ Keep EXACT same sofa legs - material, color, visible wear patterns
+✓ Keep EXACT same sofa positioning in room
+✓ Keep EXACT same relationship to other furniture
+✓ Keep EXACT same room layout and decor
+✓ Keep EXACT same color scheme of entire space
+✓ Keep EXACT same lighting conditions and mood
+✓ Keep EXACT same any built-in features (recliners, storage)
+✓ Keep EXACT same visible damage patterns (worn spots, fading)
+✓ DO NOT reposition or rotate sofa
+✓ DO NOT change fabric type or material
+✓ DO NOT change colors or patterns
+✓ DO NOT move throw pillows from their positions
+✓ DO NOT add or remove throw pillows
+✓ DO NOT change throw blanket arrangement (if intentional)
+✓ DO NOT redecorated or change room styling`;
       default:
         return `### STRUCTURE (CANNOT CHANGE - CRITICAL)
 ✓ EXACT same camera angle and perspective
@@ -872,6 +2248,107 @@ export function getGenerationPrompt(
 → Clean grout lines (PRESERVE same width, pattern - just bright and clean)
 → Remove all water marks, stains, discoloration, dirt, dust
 → Make everything look freshly cleaned but PRESERVE all materials, colors, and patterns`;
+      case "car-interior":
+      case "car-seats":
+      case "car-dashboard":
+      case "car-trunk":
+        return `→ **CRITICAL - PERFECT CLEANING REQUIRED**: Remove EVERY SINGLE particle, crumb, speck, and stain. NO exceptions.
+
+→ **FLOOR & CARPET CLEANING (MOST CRITICAL - ZERO TOLERANCE)**:
+→ Remove ALL crumbs, miettes, particles (white, beige, brown, any color) from carpet - EVERY SINGLE ONE visible
+→ Remove ALL dust particles, fine debris, and small specks from carpet surface - COMPLETE elimination
+→ Remove ALL dirt, mud, and grime from carpet fibers - deep cleaning to restore original carpet color
+→ Remove ALL stains, spots, and discoloration from carpet - make it look brand new
+→ Clean floor mats: remove EVERY particle of dirt, mud, debris, crumbs from mat surface AND between ridges/grooves (PRESERVE mat color, material, pattern)
+→ Clean floor mats: remove ALL embedded dirt from mat texture - make mats look factory fresh
+→ Remove ALL debris from under seats, between seat rails, and in all crevices
+→ Remove ALL particles from threshold areas and door sills
+→ Carpet must look PERFECTLY clean - like it was just vacuumed with a professional-grade vacuum cleaner
+→ NO visible particles, crumbs, or specks should remain anywhere on floor or carpet
+
+→ **SEAT CLEANING (PERFECT - ZERO PARTICLES)**:
+→ Remove ALL crumbs, miettes, and particles from seat fabric/leather - EVERY SINGLE ONE
+→ Remove ALL particles from seat seams, stitching, perforations, and crevices - deep cleaning
+→ Remove ALL dust, dirt, and fine particles from seat surfaces - complete elimination
+→ Remove ALL stains, spots, and discoloration from seats (PRESERVE seat fabric type and color)
+→ Remove ALL pet hair, fibers, and debris from seat surfaces - thorough removal
+→ Clean seat crevices and between seat cushions - remove ALL debris
+→ Seats must look IMMACULATE - like professionally detailed with no visible particles
+→ NO crumbs, miettes, or particles visible on seats - PERFECT cleanliness
+
+→ **DASHBOARD & SURFACES (SPOTLESS)**:
+→ Clean dashboard: remove ALL dust, dirt, fingerprints, spills, and particles from ALL surfaces (PRESERVE color, finish, and fixture positions)
+→ Remove ALL dust from air vents, grilles, and ventilation openings - deep cleaning
+→ Remove ALL particles, crumbs, and debris from dashboard surfaces - complete elimination
+→ Clean all plastic surfaces: remove ALL dust, smudges, and fingerprints - make them shine like new
+→ Remove ALL dust and particles from instrument cluster, screens, and displays
+→ Dashboard must be COMPLETELY dust-free and spotless
+
+→ **STEERING WHEEL & CONTROLS (PERFECT)**:
+→ Clean steering wheel: remove ALL grease, dirt, grime, and particles from grip areas (PRESERVE material and design)
+→ Remove ALL dust, fingerprints, and smudges from steering wheel - make it look brand new
+→ Clean all controls, buttons, and switches - remove ALL dust and particles
+→ Steering wheel must be IMMACULATE - no visible dirt, grease, or particles
+
+→ **CONSOLE & STORAGE (SPOTLESS)**:
+→ Clean center console: remove ALL spills, dirt, debris, crumbs, and particles from storage areas (PRESERVE layout and accessibility)
+→ Clean cupholders: remove ALL stains, spills, debris, and particles - make them spotless (PRESERVE position and material)
+→ Remove ALL particles and debris from all storage compartments and pockets
+→ Console must be PERFECTLY clean - no visible debris anywhere
+
+→ **INTERIOR TRIM & DETAILS (COMPLETE CLEANING)**:
+→ Clean all interior trim: remove ALL dust, grime, and particles from door panels, pillars, headliner (PRESERVE material and color)
+→ Remove ALL dust and particles from all trim pieces, bezels, and decorative elements
+→ Clean door panels: remove ALL dirt, smudges, and particles from all surfaces
+→ Remove ALL dust and particles from headliner and roof areas
+
+→ **WINDOWS & GLASS (CRYSTAL CLEAR)**:
+→ Clean windows from inside: remove ALL condensation, dust, fingerprints, fogging, and smudges (PRESERVE tint level)
+→ Windows must be CRYSTAL CLEAR with no visible marks or particles
+
+→ **SEAT BELTS & SAFETY (CLEAN)**:
+→ Clean seat belts: remove ALL visible dirt, grime, and particles (PRESERVE routing and position)
+→ Remove ALL dust and debris from seat belt mechanisms
+
+→ **PEDALS & FOOT AREAS (SPOTLESS)**:
+→ Clean pedals and foot area: remove ALL dirt, mud, and debris
+→ Remove ALL particles from pedal surfaces and surrounding areas
+
+→ **FINAL REQUIREMENTS**:
+→ Remove ALL trash items (food wrappers, cups, bottles, papers, etc.) - COMPLETE removal
+→ Remove ALL sticky residue from upholstery and surfaces
+→ Eliminate ALL pet hair from all surfaces - thorough removal
+→ Remove ALL spills and stains from all fabric surfaces
+→ **CRITICAL**: Interior must look like it just left a PROFESSIONAL DETAILING SERVICE - PERFECT, IMMACULATE, SPOTLESS
+→ **ZERO TOLERANCE**: NO visible particles, crumbs, miettes, specks, or stains should remain ANYWHERE
+→ Every surface must be PERFECTLY clean - like brand new from the factory
+→ The result must be FLAWLESS - professional detailing standard with NO imperfections`;
+      case "sofa":
+      case "sofa-living-room":
+      case "living-room-full":
+      case "armchair":
+        return `→ Remove ALL visible stains from fabric (food, drink, dirt, pet, unknown origin)
+→ Remove ALL dirt and dust accumulation from sofa surface
+→ Remove ALL dust and debris from between cushions
+→ Remove ALL pet hair from sofa fabric (thorough cleaning)
+→ Clean and refresh sofa fabric - make it appear fresh and like-new
+→ Remove any sticky residue or grime from fabric
+→ Restore fabric color vibrancy (slightly) where dirt was hiding color
+→ Straighten and fluff all cushions (seat and back cushions)
+→ Clean all throw pillows: remove stains, dust, pet hair
+→ Clean throw blanket (if present): remove stains, dust, wrinkles - fold neatly
+→ Clean armrests thoroughly: remove dirt, grime, sweat marks
+→ Clean sofa legs: remove dust and debris
+→ Remove fabric pilling (where appropriate and possible)
+→ Reduce visible wrinkles (steam effect - just from cleaning)
+→ Clean piping and trim details
+→ If applicable, clean visible cushion seams
+→ Remove any odor indicators (visual signs of staleness)
+→ Room decor: clean any visible dust on other furniture, artwork, plants, lamps
+→ Sofa should look professionally cleaned and refreshed
+→ All colors appear vibrant and true to original
+→ Fabric appears soft, clean, and well-maintained
+→ CRITICAL: Transform from "lived-in" to "showroom fresh" while preserving all original characteristics`;
       default:
         return `→ Make floor spotlessly clean (PRESERVE same pattern, material, grout lines - just pristine)
 → Clean all walls (PRESERVE same color, texture - just fresh paint look)
@@ -894,6 +2371,24 @@ YOUR TASK: Transform this EXACT SAME SPACE into its clean version.
 ⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
 
 ⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.
+
+${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS - PERFECT CLEANLINESS REQUIRED ⚠️⚠️⚠️
+
+ZERO TOLERANCE POLICY: You MUST remove EVERY SINGLE visible particle, crumb, miette, speck, stain, and debris from the car interior. NO exceptions.
+
+**MANDATORY REQUIREMENTS FOR CAR INTERIORS:**
+- Remove ALL crumbs, miettes, and particles (white, beige, brown, any color) from carpet - EVERY SINGLE ONE
+- Remove ALL fine dust particles and specks from ALL surfaces - COMPLETE elimination
+- Remove ALL embedded dirt, crumbs, and particles from carpet fibers and seat fabric
+- Remove ALL particles from seams, crevices, perforations, and hard-to-reach areas
+- Remove ALL dust, smudges, and fingerprints from dashboard, console, and all surfaces
+- Remove ALL debris from under seats, between seat rails, and in all crevices
+- Remove ALL particles from threshold areas, door sills, and floor mats
+- The result MUST be PERFECT - like a professional detailing service just finished
+- NO visible particles, crumbs, miettes, or specks should remain ANYWHERE
+- Every surface must be IMMACULATE, SPOTLESS, and FLAWLESS
+
+If you see ANY particle, crumb, or speck in the original image, you MUST remove it completely. The final result must be PERFECTLY clean with ZERO imperfections.` : ""}
 
 ## ABSOLUTE REQUIREMENTS - MUST PRESERVE 100%:
 
@@ -962,6 +2457,13 @@ ${spaceSpecificInstructions(spaceType)}
 ✗ Remove leaves, branches, debris (for outdoor/pool spaces)
 ✗ Remove algae, pool debris, floating objects (for pool areas)
 ✗ Remove all visible dirt, dust, and grime accumulation
+${spaceType.startsWith("car-") ? `✗ **CRITICAL FOR CAR INTERIORS**: Remove EVERY SINGLE crumb, miette, particle, speck, and stain
+✗ Remove ALL small particles (white, beige, brown, any color) from carpet, seats, and all surfaces
+✗ Remove ALL fine dust particles and debris - ZERO TOLERANCE for any visible particles
+✗ Remove ALL embedded dirt, crumbs, and particles from carpet fibers and seat fabric
+✗ Remove ALL particles from seams, crevices, perforations, and hard-to-reach areas
+✗ Remove ALL dust, smudges, and fingerprints from all surfaces - COMPLETE elimination
+✗ NO exceptions - EVERY visible particle, crumb, or speck must be removed for PERFECT cleanliness` : ""}
 
 ### CLEAN ALL SURFACES (MAKE PRISTINE, PRESERVE MATERIALS)
 
@@ -1006,12 +2508,16 @@ Before finalizing, verify EVERY item:
 ✓ EXACT same color palette (just fresh, no hue changes)
 ✓ ALL clutter removed (thorough cleaning)
 ✓ ALL surfaces clean (spotless)
+${spaceType.startsWith("car-") ? `✓ **CRITICAL FOR CAR INTERIORS**: ZERO visible particles, crumbs, miettes, or specks ANYWHERE
+✓ **PERFECT CLEANLINESS**: Carpet, seats, dashboard, and all surfaces are IMMACULATE - like professional detailing
+✓ **NO EXCEPTIONS**: Every single particle, crumb, and stain has been completely removed
+✓ **FLAWLESS RESULT**: Interior looks like it just left a professional detailing service - PERFECT, SPOTLESS, IMPECCABLE` : ""}
 ✓ Result is RECOGNIZABLY the SAME space, professionally cleaned
 ✓ Result would be IDENTICAL if processed again with same input
 
 ⚠️ CONSISTENCY CHECK: If you process this same image again, you MUST produce the EXACT same result.
 
-Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`,
+${spaceType.startsWith("car-") ? `Think: "This is the SAME car interior photograph, taken immediately after a PROFESSIONAL DETAILING SERVICE finished. The interior is IDENTICAL in every way, but PERFECTLY CLEAN - IMMACULATE, SPOTLESS, with ZERO particles, crumbs, miettes, or stains visible anywhere. Every surface looks like brand new from the factory. Every time I see this image, I will clean it to PERFECT, FLAWLESS standards with ZERO TOLERANCE for any visible particles or imperfections."` : `Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`}`,
 
     marketing: `YOU ARE ENHANCING AN EXISTING IMAGE FOR MARKETING.
 
