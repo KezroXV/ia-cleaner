@@ -16,8 +16,8 @@ try {
   sharp = null;
 }
 
-/** Taille du filtre médian (3 = 3x3, léger ; 5 = plus agressif) */
-const MEDIAN_SIZE = 3;
+/** Taille du filtre médian (5 = 5x5, supprime mieux taches/miettes ; 7 = encore plus agressif) */
+const MEDIAN_SIZE = 5;
 
 /**
  * Supprime les petites taches blanches / particules sur l'image générée.

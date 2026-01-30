@@ -162,6 +162,13 @@ FLOOR MATS require EXTREME ATTENTION. You MUST identify EVERY detail:
 - **ALL debris** that has slipped under the mat
 - **ALL particles** around the mat perimeter
 
+**SURROUNDING CARPET / MOQUETTE (CRITICAL - OFTEN FORGOTTEN):**
+The FIXED cabin carpet (moquette) visible AROUND the floor mat (between mat and seat, under pedals, along door sills) must be described and cleaned too. For this zone, list:
+- **ALL debris, dust, crumbs, particles** on the surrounding carpet (not just on the mat)
+- **ALL stains, streaks, diffuse marks** on the surrounding carpet
+- Approximate dirt level: pristine / light / moderate / heavy / very heavy
+- If the surrounding carpet is very dirty while the mat is in frame, say so explicitly so it gets cleaned.
+
 **Floor mat cleanliness verification:**
 You MUST answer these questions for EACH floor mat:
 1. How many visible particles are on the mat surface? (estimate if >10)

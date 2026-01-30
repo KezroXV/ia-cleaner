@@ -33,9 +33,9 @@ export const CAR_GENERATION_CONFIG: Record<
   }
 > = {
   "perfect-clean": {
-    temperature: 0.05, // Très bas pour éviter bruit/miettes en sortie (était 0.1)
-    topK: 15, // Moins de variations = moins de specks aléatoires
-    topP: 0.75, // Probabilité plus stricte
+    temperature: 0, // Zéro aléatoire pour minimiser specks/miettes en sortie
+    topK: 1, // Réponse la plus déterministe
+    topP: 0.1, // Probabilité très stricte
   },
   "enhanced-beauty": {
     temperature: 0.2, // Légère créativité

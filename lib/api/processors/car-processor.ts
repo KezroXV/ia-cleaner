@@ -8,7 +8,7 @@ import {
   getCarAnalysisPrompt,
   getCarGenerationPrompt,
 } from "../../prompts/car-prompts";
-import { removeLightSpecks } from "../image-postprocess";
+import { removeLightSpecks } from "../../image-postprocess";
 
 // Configuration
 const API_KEY = process.env.GOOGLE_GEMINI_API_KEY!;
@@ -221,7 +221,7 @@ export async function generateCleanCarImage(
     );
 
     // Post-traitement : supprimer les petites taches blanches / miettes résiduelles
-    generatedBuffer = await removeLightSpecks(generatedBuffer);
+    generatedBuffer = Buffer.from(await removeLightSpecks(generatedBuffer));
 
     return generatedBuffer;
   } catch (error: unknown) {

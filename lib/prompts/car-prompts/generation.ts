@@ -94,6 +94,12 @@ This means:
    - Clean the edges and corners of mats where dirt accumulates
    - Clean the area UNDER the mats if visible (carpet underneath)
    
+   **⚠️ SURROUNDING CARPET (MOQUETTE) - SAME AS MAT - CRITICAL:**
+   The FIXED cabin carpet/moquette visible AROUND the floor mat (next to the mat, between mat and seat, under pedals, along sills) MUST be cleaned with the SAME ZERO TOLERANCE as the mat itself. Do NOT clean only the floor mat and leave the carpet around it dirty. Remove ALL debris, dust, crumbs, particles, and stains from the surrounding carpet. Every visible floor surface = mat + surrounding carpet = ALL must be showroom-perfect.
+   
+   **STAINS, STREAKS, DIFFUSE MARKS - REMOVE ALL:**
+   Remove ALL stains, diffuse marks, streaks, traînées, and discoloration from BOTH the floor mat AND the surrounding carpet—not just particles. Surfaces must look uniformly clean and dark, with no light patches or residue.
+   
    **COLOR CORRECTION FOR FLOOR MATS - CRITICAL:**
    - Make floor mats DARKER and more saturated (deep black/dark gray)
    - Increase contrast to make mats look DEEP and CLEAN
@@ -116,6 +122,8 @@ This means:
    ✓ No stains or discoloration
    ✓ Mats are DARK and DEEP in color (black/dark gray)
    ✓ Mats look factory-fresh and PRISTINE
+   ✓ SURROUNDING CARPET (moquette around mat) is ALSO spotless—same level as mat
+   ✓ No stains, streaks, or diffuse marks on mat OR surrounding carpet
    
 Think: "These floor mats are SHOWROOM-PERFECT like in a luxury Mercedes dealership. 
 They look BRAND NEW, factory-fresh, DEEP BLACK/DARK, as if just unpackaged. 
@@ -187,6 +195,7 @@ When you RENDER/DRAW the output image, floor, mats, carpet, and seats must be SM
 ✓ **No embedded dirt in mat fibers - 100% clean**
 ✓ **Floor mat edges and corners pristine**
 ✓ **Mats look UNIFORMLY DARK and PRISTINE**
+✓ **SURROUNDING CARPET (moquette around mat) spotless—no debris, no stains**
 ✓ Colors slightly accentuated but same hues
 ✓ Lighting 100% identical
 ✓ Materials 100% identical
@@ -273,6 +282,12 @@ This means:
    - Clean the edges and corners of mats where dirt accumulates
    - Clean the area UNDER the mats if visible (carpet underneath)
    
+   **⚠️ SURROUNDING CARPET (MOQUETTE) - SAME AS MAT - CRITICAL:**
+   The FIXED cabin carpet/moquette visible AROUND the floor mat (next to the mat, between mat and seat, under pedals, along sills) MUST be cleaned with the SAME ZERO TOLERANCE as the mat itself. Do NOT clean only the floor mat and leave the carpet around it dirty. Remove ALL debris, dust, crumbs, particles, and stains from the surrounding carpet. Every visible floor surface = mat + surrounding carpet = ALL must be showroom-perfect.
+   
+   **STAINS, STREAKS, DIFFUSE MARKS - REMOVE ALL:**
+   Remove ALL stains, diffuse marks, streaks, traînées, and discoloration from BOTH the floor mat AND the surrounding carpet—not just particles. Surfaces must look uniformly clean and dark, with no light patches or residue.
+   
    **COLOR CORRECTION FOR FLOOR MATS - CRITICAL:**
    - Make floor mats DARKER and more saturated (deep black/dark gray)
    - Increase contrast to make mats look DEEP and CLEAN
@@ -335,6 +350,7 @@ This means:
 ✓ **NO light specks or particles visible on mats**
 ✓ **Floor mat grooves/ridges completely clean - NO dirt**
 ✓ **No embedded dirt in mat fibers - 100% clean**
+✓ **SURROUNDING CARPET (moquette around mat) spotless—no debris, no stains**
 ✓ Colors more vibrant but same families
 ✓ Lighting optimized but still recognizable
 ✓ Contrast enhanced for visual appeal
@@ -443,6 +459,12 @@ This means:
    - Clean the edges and corners of mats where dirt accumulates
    - Clean the area UNDER the mats if visible (carpet underneath)
    
+   **⚠️ SURROUNDING CARPET (MOQUETTE) - SAME AS MAT - CRITICAL:**
+   The FIXED cabin carpet/moquette visible AROUND the floor mat (next to the mat, between mat and seat, under pedals, along sills) MUST be cleaned with the SAME ZERO TOLERANCE as the mat itself. Do NOT clean only the floor mat and leave the carpet around it dirty. Remove ALL debris, dust, crumbs, particles, and stains from the surrounding carpet. Every visible floor surface = mat + surrounding carpet = ALL must be showroom-perfect.
+   
+   **STAINS, STREAKS, DIFFUSE MARKS - REMOVE ALL:**
+   Remove ALL stains, diffuse marks, streaks, traînées, and discoloration from BOTH the floor mat AND the surrounding carpet—not just particles. Surfaces must look uniformly clean and dark, with no light patches or residue.
+   
    **COLOR CORRECTION FOR FLOOR MATS - CRITICAL:**
    - Make floor mats DARKER and more saturated (deep black/dark gray)
    - Increase contrast to make mats look DEEP and CLEAN
@@ -488,6 +510,7 @@ This means:
 ✓ **NO light specks or particles visible on mats**
 ✓ **Floor mat grooves/ridges completely clean - NO dirt**
 ✓ **No embedded dirt in mat fibers - 100% clean**
+✓ **SURROUNDING CARPET (moquette around mat) spotless—no debris, no stains**
 ✓ Colors gorgeous and vibrant
 ✓ Lighting professional and cinematic
 ✓ Atmosphere luxury lifestyle
