@@ -4,11 +4,19 @@
 export function getSofaAnalysisPrompt(): string {
   return `Analyze this sofa/living room image in EXTREME DETAIL to enable IDENTICAL reconstruction after cleaning.
 
+⚠️ PARTIAL VIEW RULE: The image may show ONLY A PART of the sofa or room (e.g. one cushion, back+seat only, arm only, close-up of fabric). You MUST analyze ONLY what is VISIBLE in the frame. Do NOT describe, infer, or assume any element that is outside the image or cut by the frame. Do NOT try to "complete" the sofa or room in your description. List explicitly which parts ARE visible (e.g. "Visible: seat cushion, back cushion, small strip of floor") so the cleaning applies only to those areas.
+
 ⚠️ CRITICAL: Your analysis will be used to recreate this EXACT SAME space, just cleaned.
-Be EXTREMELY precise with ALL details.
+Be EXTREMELY precise with ALL details that are actually visible.
 
 ⚠️ CONSISTENCY REQUIREMENT: For the same image, you MUST produce the SAME analysis 
 every time. Be systematic and thorough.
+
+## 0. SCOPE OF IMAGE (PARTIAL VIEW - MANDATORY FIRST STEP)
+
+- Is this a FULL sofa/room view or a PARTIAL view? (partial = only part of sofa or room is in frame)
+- List EXACTLY which parts are VISIBLE: e.g. "one seat cushion + back cushion", "arm + corner of seat", "close-up of fabric with cushion seam", "sofa + coffee table + strip of floor"
+- Do NOT list or describe anything that is not visible (e.g. if the other arm is cut off, do not describe it)
 
 ## 1. CAMERA & PERSPECTIVE (CRITICAL FOR PRESERVATION)
 

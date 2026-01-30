@@ -4,11 +4,19 @@
 export function getCarAnalysisPrompt(): string {
   return `Analyze this car interior image in EXTREME DETAIL to enable IDENTICAL reconstruction after cleaning.
 
+⚠️ PARTIAL VIEW RULE: The image may show ONLY A PART of the car interior (e.g. floor only, floor+seat base, door sill, one seat corner). You MUST analyze ONLY what is VISIBLE in the frame. Do NOT describe, infer, or assume any element that is outside the image or cut by the frame. Do NOT try to "complete" the car in your description. List explicitly which zones ARE visible (e.g. "Visible: driver floor mat, pedals area, seat base edge, door threshold") so the cleaning applies only to those areas.
+
 ⚠️ CRITICAL: Your analysis will be used to recreate this EXACT SAME interior, just cleaned.
-Be EXTREMELY precise with ALL details.
+Be EXTREMELY precise with ALL details that are actually visible.
 
 ⚠️ CONSISTENCY REQUIREMENT: For the same image, you MUST produce the SAME analysis 
 every time. Be systematic and thorough.
+
+## 0. SCOPE OF IMAGE (PARTIAL VIEW - MANDATORY FIRST STEP)
+
+- Is this a FULL cabin view or a PARTIAL view? (partial = only part of interior is in frame)
+- List EXACTLY which areas are VISIBLE: e.g. "floor mat only", "floor + lower seat + door sill", "dashboard + steering wheel", "seat base + rails + carpet"
+- Do NOT list or describe anything that is not visible (e.g. if steering wheel is not in frame, do not describe it)
 
 ## 1. CAMERA & PERSPECTIVE (CRITICAL FOR PRESERVATION)
 

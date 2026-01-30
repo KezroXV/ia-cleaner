@@ -8,6 +8,7 @@ import {
   PromptType,
   SpaceType,
 } from "./prompts";
+import { removeLightSpecks } from "./image-postprocess";
 
 // Configuration
 const API_KEY = process.env.GOOGLE_GEMINI_API_KEY!;
@@ -26,12 +27,12 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 function generateSeedFromImage(imageBuffer: Buffer): number {
   // Créer un hash SHA-256 de l'image
   const hash = createHash("sha256").update(imageBuffer).digest("hex");
-  
+
   // Prendre les 8 premiers caractères du hash et les convertir en nombre
   // Limiter à 32 bits (max pour un seed)
   const seedString = hash.substring(0, 8);
   const seed = parseInt(seedString, 16) % 2147483647; // Max 32-bit integer
-  
+
   return seed;
 }
 
@@ -88,7 +89,7 @@ function parseQuotaError(error: unknown): {
 async function retryWithBackoff<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  initialDelay: number = 1000
+  initialDelay: number = 1000,
 ): Promise<T> {
   let lastError: unknown;
 
@@ -106,7 +107,7 @@ async function retryWithBackoff<T>(
           console.log(
             `⏳ Attente de ${quotaInfo.retryAfter}s avant retry (tentative ${
               attempt + 1
-            }/${maxRetries})...`
+            }/${maxRetries})...`,
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
           continue;
@@ -115,7 +116,7 @@ async function retryWithBackoff<T>(
         // Backoff exponentiel pour autres erreurs
         const delay = initialDelay * Math.pow(2, attempt);
         console.log(
-          `⏳ Retry dans ${delay}ms (tentative ${attempt + 1}/${maxRetries})...`
+          `⏳ Retry dans ${delay}ms (tentative ${attempt + 1}/${maxRetries})...`,
         );
         await new Promise((resolve) => setTimeout(resolve, delay));
         continue;
@@ -237,7 +238,7 @@ export async function analyzeMessyRoom(imageBuffer: Buffer): Promise<string> {
     const errorMessage = (error as { message?: string })?.message || "";
     if (errorMessage.includes("API key") || errorMessage.includes("401")) {
       throw new Error(
-        "Clé API Gemini invalide. Vérifie GOOGLE_GEMINI_API_KEY dans .env.local"
+        "Clé API Gemini invalide. Vérifie GOOGLE_GEMINI_API_KEY dans .env.local",
       );
     }
 
@@ -259,7 +260,7 @@ export async function editImageWithGemini(
   originalImageBuffer: Buffer,
   detailedAnalysis: string,
   promptType: PromptType = "realistic",
-  spaceType: SpaceType = "auto"
+  spaceType: SpaceType = "auto",
 ): Promise<Buffer> {
   try {
     console.log("🎨 Génération d'image avec Gemini 2.5 Flash Image...");
@@ -272,7 +273,7 @@ export async function editImageWithGemini(
     // UTILISER LE MODÈLE GEMINI 2.5 FLASH IMAGE (stable)
     // Générer un seed basé sur l'image pour garantir la reproductibilité
     const seed = generateSeedFromImage(originalImageBuffer);
-    
+
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash-image", // Modèle stable pour la génération d'images
       generationConfig: {
@@ -288,7 +289,7 @@ export async function editImageWithGemini(
     const editingPrompt = getGenerationPrompt(
       promptType,
       detailedAnalysis,
-      spaceType
+      spaceType,
     );
 
     console.log("📝 Envoi de la requête à Gemini 2.5 Flash Image...");
@@ -300,7 +301,7 @@ export async function editImageWithGemini(
     // Note: Inclure le seed dans le prompt pour aider à la reproductibilité
     // même si l'API ne le supporte pas directement
     const enhancedPrompt = `${editingPrompt}\n\n[Seed: ${seed} - Utilise ce seed pour garantir la reproductibilité]`;
-    
+
     const result = await model.generateContent([
       {
         inlineData: {
@@ -331,7 +332,7 @@ export async function editImageWithGemini(
         if (part.inlineData && part.inlineData.data) {
           imageData = part.inlineData.data;
           console.log(
-            "✅ Image trouvée dans la réponse Gemini 2.5 Flash Image"
+            "✅ Image trouvée dans la réponse Gemini 2.5 Flash Image",
           );
           break;
         }
@@ -340,7 +341,7 @@ export async function editImageWithGemini(
 
     if (!imageData) {
       throw new Error(
-        "Gemini 2.5 Flash Image n'a pas retourné d'image. Vérifiez que le billing est activé."
+        "Gemini 2.5 Flash Image n'a pas retourné d'image. Vérifiez que le billing est activé.",
       );
     }
 
@@ -348,7 +349,7 @@ export async function editImageWithGemini(
     console.log(
       "✅ Image générée avec succès:",
       generatedBuffer.length,
-      "bytes"
+      "bytes",
     );
 
     return generatedBuffer;
@@ -359,13 +360,13 @@ export async function editImageWithGemini(
     const errorMessage = (error as { message?: string })?.message || "";
     if (errorMessage.includes("billing")) {
       throw new Error(
-        "Billing non activé. Va sur https://console.cloud.google.com et active le billing"
+        "Billing non activé. Va sur https://console.cloud.google.com et active le billing",
       );
     }
 
     if (errorMessage.includes("quota")) {
       throw new Error(
-        "Quota Gemini 2.5 Flash Image dépassé. Attends quelques minutes ou upgrade ton plan"
+        "Quota Gemini 2.5 Flash Image dépassé. Attends quelques minutes ou upgrade ton plan",
       );
     }
 
@@ -376,7 +377,7 @@ export async function editImageWithGemini(
     }
 
     throw new Error(
-      `Échec de la génération d'image: ${errorMessage || String(error)}`
+      `Échec de la génération d'image: ${errorMessage || String(error)}`,
     );
   }
 }
@@ -387,7 +388,7 @@ export async function editImageWithGemini(
  */
 export async function processImageTransformation(
   imageBuffer: Buffer,
-  promptType: PromptType = "realistic"
+  promptType: PromptType = "realistic",
 ): Promise<{ generatedImage: Buffer; analysis: string }> {
   console.log("🔄 Démarrage du flux de transformation...");
 
@@ -401,14 +402,24 @@ export async function processImageTransformation(
 
   // Étape 2: Édition avec l'image originale comme base et prompt spécialisé
   console.log(
-    "🎨 Étape 2/3: Édition de l'image (préservation de structure)..."
+    "🎨 Étape 2/3: Édition de l'image (préservation de structure)...",
   );
-  const generatedImage = await editImageWithGemini(
+  let generatedImage = await editImageWithGemini(
     imageBuffer, // ← Image originale passée ici
     analysis,
     promptType,
-    spaceType // ← Utiliser le type détecté
+    spaceType, // ← Utiliser le type détecté
   );
+
+  // Post-traitement anti-miettes pour intérieurs voiture (clean-image)
+  const isCar =
+    spaceType === "car-interior" ||
+    spaceType === "car-seats" ||
+    spaceType === "car-dashboard" ||
+    spaceType === "car-trunk";
+  if (isCar) {
+    generatedImage = await removeLightSpecks(generatedImage);
+  }
 
   console.log("✅ Transformation complétée");
 

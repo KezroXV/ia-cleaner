@@ -8,6 +8,7 @@ import {
   getCarAnalysisPrompt,
   getCarGenerationPrompt,
 } from "../../prompts/car-prompts";
+import { removeLightSpecks } from "../image-postprocess";
 
 // Configuration
 const API_KEY = process.env.GOOGLE_GEMINI_API_KEY!;
@@ -33,7 +34,7 @@ function generateSeedFromImage(imageBuffer: Buffer): number {
  * Détecte le type d'espace automobile
  */
 export async function detectCarSpaceType(
-  imageBuffer: Buffer
+  imageBuffer: Buffer,
 ): Promise<CarSpaceType> {
   try {
     console.log("🚗 Détection du type d'espace automobile...");
@@ -66,7 +67,9 @@ export async function detectCarSpaceType(
     const detectionText = response.text().trim();
 
     if (!detectionText) {
-      console.log("⚠️ Aucune détection retournée, utilisation de car-interior-full par défaut");
+      console.log(
+        "⚠️ Aucune détection retournée, utilisation de car-interior-full par défaut",
+      );
       return "car-interior-full";
     }
 
@@ -74,7 +77,10 @@ export async function detectCarSpaceType(
     console.log(`✅ Type d'espace automobile détecté: ${spaceType}`);
     return spaceType;
   } catch (error: unknown) {
-    console.error("⚠️ Erreur lors de la détection du type d'espace automobile:", error);
+    console.error(
+      "⚠️ Erreur lors de la détection du type d'espace automobile:",
+      error,
+    );
     console.log("⚠️ Utilisation de car-interior-full par défaut");
     return "car-interior-full";
   }
@@ -83,9 +89,7 @@ export async function detectCarSpaceType(
 /**
  * Analyse une image d'intérieur de voiture
  */
-export async function analyzeCarInterior(
-  imageBuffer: Buffer
-): Promise<string> {
+export async function analyzeCarInterior(imageBuffer: Buffer): Promise<string> {
   try {
     console.log("🔍 Analyse détaillée de l'intérieur automobile...");
 
@@ -120,12 +124,18 @@ export async function analyzeCarInterior(
       throw new Error("Aucune analyse retournée par Gemini");
     }
 
-    console.log("✅ Analyse automobile complétée:", analysisText.length, "caractères");
+    console.log(
+      "✅ Analyse automobile complétée:",
+      analysisText.length,
+      "caractères",
+    );
     return analysisText;
   } catch (error: unknown) {
     console.error("❌ Erreur lors de l'analyse automobile:", error);
     const errorMessage = (error as { message?: string })?.message || "";
-    throw new Error(`Échec de l'analyse automobile: ${errorMessage || String(error)}`);
+    throw new Error(
+      `Échec de l'analyse automobile: ${errorMessage || String(error)}`,
+    );
   }
 }
 
@@ -136,7 +146,7 @@ export async function generateCleanCarImage(
   originalImageBuffer: Buffer,
   detailedAnalysis: string,
   mode: CarRenderMode,
-  spaceType: CarSpaceType
+  spaceType: CarSpaceType,
 ): Promise<Buffer> {
   try {
     console.log(`🎨 Génération d'image automobile - Mode: ${mode}`);
@@ -154,7 +164,11 @@ export async function generateCleanCarImage(
     });
 
     const base64Image = originalImageBuffer.toString("base64");
-    const generationPrompt = getCarGenerationPrompt(mode, detailedAnalysis, spaceType);
+    const generationPrompt = getCarGenerationPrompt(
+      mode,
+      detailedAnalysis,
+      spaceType,
+    );
 
     console.log("📝 Envoi de la requête à Gemini 2.5 Flash Image...");
     console.log("🎯 Mode:", mode);
@@ -199,14 +213,23 @@ export async function generateCleanCarImage(
       throw new Error("Gemini n'a pas retourné d'image automobile");
     }
 
-    const generatedBuffer = Buffer.from(imageData, "base64");
-    console.log("✅ Image automobile générée:", generatedBuffer.length, "bytes");
+    let generatedBuffer = Buffer.from(imageData, "base64");
+    console.log(
+      "✅ Image automobile générée:",
+      generatedBuffer.length,
+      "bytes",
+    );
+
+    // Post-traitement : supprimer les petites taches blanches / miettes résiduelles
+    generatedBuffer = await removeLightSpecks(generatedBuffer);
 
     return generatedBuffer;
   } catch (error: unknown) {
     console.error("❌ Erreur lors de la génération automobile:", error);
     const errorMessage = (error as { message?: string })?.message || "";
-    throw new Error(`Échec de la génération automobile: ${errorMessage || String(error)}`);
+    throw new Error(
+      `Échec de la génération automobile: ${errorMessage || String(error)}`,
+    );
   }
 }
 
@@ -215,8 +238,12 @@ export async function generateCleanCarImage(
  */
 export async function processCarImageTransformation(
   imageBuffer: Buffer,
-  mode: CarRenderMode = "perfect-clean"
-): Promise<{ generatedImage: Buffer; analysis: string; spaceType: CarSpaceType }> {
+  mode: CarRenderMode = "perfect-clean",
+): Promise<{
+  generatedImage: Buffer;
+  analysis: string;
+  spaceType: CarSpaceType;
+}> {
   console.log("🚗 Démarrage du flux de transformation automobile...");
 
   // Étape 1: Détection du type d'espace
@@ -233,7 +260,7 @@ export async function processCarImageTransformation(
     imageBuffer,
     analysis,
     mode,
-    spaceType
+    spaceType,
   );
 
   console.log("✅ Transformation automobile complétée");

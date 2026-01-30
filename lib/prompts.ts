@@ -51,6 +51,8 @@ export type SpaceType =
 export function getSpaceTypeDetectionPrompt(): string {
   return `Analyze this image and determine the TYPE OF SPACE shown. Respond with ONLY ONE of these exact values:
 
+⚠️ PARTIAL VIEWS: The image may show ONLY A PART of a space (e.g. just the car floor, one seat corner, one sofa cushion, close-up of dashboard). Still classify by the SPACE TYPE that best matches what is visible. Do NOT require the full room or full car to be visible.
+
 - "interior" - Indoor room (living room, bedroom, office, etc.)
 - "kitchen" - Kitchen space
 - "bathroom" - Bathroom or restroom
@@ -61,14 +63,14 @@ export function getSpaceTypeDetectionPrompt(): string {
 - "office" - Office or workspace
 - "bedroom" - Bedroom
 - "living-room" - Living room or lounge
-- "car-interior" - General car interior/cabin view
-- "car-seats" - Car seats (front or back, close-up focus on seating)
-- "car-dashboard" - Dashboard and steering wheel area
+- "car-interior" - Car interior (full cabin OR partial: floor only, floor+seat base, door panel, etc.)
+- "car-seats" - Car seats (full or partial: one seat, seat base, seat back, rails visible)
+- "car-dashboard" - Dashboard/steering area (full or partial: wheel only, console only, etc.)
 - "car-trunk" - Trunk or boot of the car
-- "sofa" - Single sofa or couch in focus
-- "sofa-living-room" - Sofa as main element in a living room
+- "sofa" - Sofa/couch (full sofa OR partial: one cushion, back+seat only, arm only, close-up of fabric)
+- "sofa-living-room" - Sofa as main element in a living room (can be partial view of room)
 - "living-room-full" - Full living room with sofa, furniture, and decor
-- "armchair" - Single armchair or accent chair
+- "armchair" - Single armchair or accent chair (full or partial)
 
 Respond with ONLY the type value, nothing else.`;
 }
@@ -96,26 +98,26 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
     livingroom: "living-room",
     "car-interior": "car-interior",
     "car interior": "car-interior",
-    "carinterior": "car-interior",
+    carinterior: "car-interior",
     "car-seats": "car-seats",
     "car seats": "car-seats",
-    "carseats": "car-seats",
+    carseats: "car-seats",
     "car-dashboard": "car-dashboard",
     "car dashboard": "car-dashboard",
-    "cardashboard": "car-dashboard",
+    cardashboard: "car-dashboard",
     dashboard: "car-dashboard",
     "car-trunk": "car-trunk",
     "car trunk": "car-trunk",
-    "cartrunk": "car-trunk",
+    cartrunk: "car-trunk",
     trunk: "car-trunk",
     sofa: "sofa",
     couch: "sofa",
     "sofa-living-room": "sofa-living-room",
     "sofa living room": "sofa-living-room",
-    "sofalivingroom": "sofa-living-room",
+    sofalivingroom: "sofa-living-room",
     "living-room-full": "living-room-full",
     "living room full": "living-room-full",
-    "livingroomfull": "living-room-full",
+    livingroomfull: "living-room-full",
     armchair: "armchair",
     "arm chair": "armchair",
   };
@@ -174,23 +176,30 @@ export function normalizeSpaceType(detectionResponse: string): SpaceType {
     return "living-room";
   }
   // Car Interior matching
-  if (normalized.includes("car") || normalized.includes("interior") || normalized.includes("cabin")) {
+  if (
+    normalized.includes("car") ||
+    normalized.includes("interior") ||
+    normalized.includes("cabin")
+  ) {
     if (normalized.includes("seat")) return "car-seats";
     if (normalized.includes("dashboard")) return "car-dashboard";
-    if (normalized.includes("trunk") || normalized.includes("boot")) return "car-trunk";
+    if (normalized.includes("trunk") || normalized.includes("boot"))
+      return "car-trunk";
     return "car-interior";
   }
-  
+
   // Sofa matching
   if (normalized.includes("sofa") || normalized.includes("couch")) {
-    if (normalized.includes("room") || normalized.includes("living")) return "sofa-living-room";
+    if (normalized.includes("room") || normalized.includes("living"))
+      return "sofa-living-room";
     if (normalized.includes("full")) return "living-room-full";
     return "sofa";
   }
-  
+
   if (normalized.includes("armchair")) return "armchair";
-  if (normalized.includes("living") || normalized.includes("room")) return "living-room-full";
-  
+  if (normalized.includes("living") || normalized.includes("room"))
+    return "living-room-full";
+
   if (
     normalized.includes("indoor") ||
     normalized.includes("room") ||
@@ -588,9 +597,12 @@ For EACH item:
 - Artificial light: ceiling lights, floor lamps, table lamps, styles
 - Overall brightness and mood`,
 
-    "car-interior": `## 2. CAR INTERIOR STRUCTURE (CRITICAL)
+    "car-interior": `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the car (e.g. floor only, seat base only, door sill): analyze ONLY what is VISIBLE. List explicitly which zones ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Seating Configuration:
+## 2. CAR INTERIOR STRUCTURE (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Seating Configuration (only if visible in frame):
 - Seating type: 2-seater / 4-seater / 5-seater / 7-seater
 - Seat arrangement (bucket seats / bench seats / captain's chairs)
 - Front seat positions: reclined angle, distance forward/backward from steering wheel
@@ -774,9 +786,12 @@ List items that should STAY exactly as they are. For EACH item, specify:
 
 ⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
 
-    "car-seats": `## 2. CAR SEATS STRUCTURE (CRITICAL)
+    "car-seats": `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the seats (e.g. seat base only, rails, one cushion): analyze ONLY what is VISIBLE. List explicitly which parts ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Seating Configuration:
+## 2. CAR SEATS STRUCTURE (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Seating Configuration (only if visible in frame):
 - Seating type: 2-seater / 4-seater / 5-seater / 7-seater
 - Seat arrangement (bucket seats / bench seats / captain's chairs)
 - Front seat positions: reclined angle, distance forward/backward from steering wheel
@@ -879,9 +894,12 @@ List items that should STAY exactly as they are. For EACH item, specify:
 
 ⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
 
-    "car-dashboard": `## 2. CAR DASHBOARD STRUCTURE (CRITICAL)
+    "car-dashboard": `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the dashboard (e.g. wheel only, console only): analyze ONLY what is VISIBLE. List explicitly which parts ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Dashboard Layout:
+## 2. CAR DASHBOARD STRUCTURE (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Dashboard Layout (only if visible in frame):
 - Dashboard shape and layout (angular / curved / multi-tier)
 - Dashboard features visible: instrument cluster, infotainment screen, air vents, cup holders, storage cubbies
 - Steering wheel size, design style, material (leather / fabric / grip material)
@@ -994,9 +1012,12 @@ List items that should STAY exactly as they are. For EACH item, specify:
 
 ⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
 
-    "car-trunk": `## 2. CAR TRUNK STRUCTURE (CRITICAL)
+    "car-trunk": `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the trunk: analyze ONLY what is VISIBLE. List explicitly which parts ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Trunk Layout:
+## 2. CAR TRUNK STRUCTURE (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Trunk Layout (only if visible in frame):
 - Trunk dimensions and shape
 - Floor material: carpet / plastic / rubber mat / exposed metal
 - Side panels: material, color, texture
@@ -1084,9 +1105,12 @@ List items that should STAY exactly as they are. For EACH item, specify:
 
 ⚠️ CRITICAL: The cleaned version should maintain the SAME atmosphere and style - just cleaner.`,
 
-    "sofa": `## 2. SOFA STRUCTURE & DESIGN (CRITICAL)
+    sofa: `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the sofa or room (e.g. one cushion, back+seat only, arm only): analyze ONLY what is VISIBLE. List explicitly which parts ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Sofa Type & Configuration:
+## 2. SOFA STRUCTURE & DESIGN (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Sofa Type & Configuration (only if visible in frame):
 - Sofa style: sectional / modular / straight / curved / L-shaped / U-shaped / chaise lounge / sleeper sofa
 - Sofa size: 2-seater / 3-seater / 4-seater / XL / oversized
 - Sectional configuration (if applicable): left-facing / right-facing / neutral
@@ -1256,9 +1280,12 @@ List items that should STAY exactly as they are. For EACH item, specify:
 
 ⚠️ CRITICAL: These items must remain in EXACT same positions - only cleaning and organization change.`,
 
-    "sofa-living-room": `## 2. SOFA STRUCTURE & DESIGN (CRITICAL)
+    "sofa-living-room": `## 0. PARTIAL VIEW (MANDATORY IF APPLICABLE)
+- If the image shows ONLY A PART of the sofa or room: analyze ONLY what is VISIBLE. List explicitly which parts ARE visible. Do NOT describe or assume elements outside the frame.
 
-### Sofa Type & Configuration:
+## 2. SOFA STRUCTURE & DESIGN (CRITICAL - ONLY WHAT IS VISIBLE)
+
+### Sofa Type & Configuration (only if visible in frame):
 - Sofa style: sectional / modular / straight / curved / L-shaped / U-shaped / chaise lounge / sleeper sofa
 - Sofa size: 2-seater / 3-seater / 4-seater / XL / oversized
 - Sectional configuration (if applicable): left-facing / right-facing / neutral
@@ -1511,7 +1538,7 @@ List items that should STAY exactly as they are. For EACH item, specify:
 - Artificial light: ceiling lights, floor lamps, table lamps, styles
 - Overall brightness and mood`,
 
-    "armchair": `## 2. ARMCHAIR STRUCTURE & DESIGN (CRITICAL)
+    armchair: `## 2. ARMCHAIR STRUCTURE & DESIGN (CRITICAL)
 
 ### Armchair Type & Configuration:
 - Armchair style: wingback / recliner / accent / swivel / club / modern / traditional
@@ -1793,16 +1820,16 @@ ${commonSections}`;
   }
 
   const spaceSpecific = spaceSpecificPrompts[spaceType];
-  
+
   // Pour les types car-* et sofa-*, ils ont déjà leurs propres sections 6-8
   // On ajoute seulement les sections 9 et 10 finales
-  const isCarOrSofaType = 
-    spaceType.startsWith("car-") || 
-    spaceType === "sofa" || 
-    spaceType === "sofa-living-room" || 
-    spaceType === "living-room-full" || 
+  const isCarOrSofaType =
+    spaceType.startsWith("car-") ||
+    spaceType === "sofa" ||
+    spaceType === "sofa-living-room" ||
+    spaceType === "living-room-full" ||
     spaceType === "armchair";
-  
+
   if (isCarOrSofaType) {
     const finalSections = `## 9. ATMOSPHERE & STYLE (PRESERVE MOOD)
 
@@ -1832,14 +1859,14 @@ Before completing your analysis, verify you have described:
 ⚠️ CRITICAL: Be EXTREMELY precise with spatial relationships, measurements, colors, and positions. The goal is to describe this space so accurately that it can be recreated IDENTICALLY, just cleaned. Every detail matters.
 
 ⚠️ CONSISTENCY: Use the same level of detail, same structure, and same precision every time you analyze this image. Your analysis should be deterministic and reproducible.`;
-    
+
     return `${basePrompt}
 
 ${spaceSpecific}
 
 ${finalSections}`;
   }
-  
+
   return `${basePrompt}
 
 ${spaceSpecific}
@@ -1854,7 +1881,7 @@ ${commonSections}`;
 export function getGenerationPrompt(
   type: PromptType,
   analysis: string,
-  spaceType: SpaceType = "auto"
+  spaceType: SpaceType = "auto",
 ): string {
   // Instructions spécifiques selon le type d'espace
   const spaceSpecificInstructions = (spaceType: SpaceType): string => {
@@ -1972,6 +1999,7 @@ export function getGenerationPrompt(
       case "car-dashboard":
       case "car-trunk":
         return `### CAR-SPECIFIC PRESERVATION (STRUCTURE ONLY - CLEANING IS AGGRESSIVE)
+✓ PARTIAL VIEW: Clean and improve ONLY what is visible in the frame. Do NOT generate, complete, or invent any part of the car outside the image (e.g. do not add steering wheel or full seat if only floor is visible).
 
 **PRESERVE (Structure & Design - ~95%):**
 ✓ Keep same steering wheel angle, size, design, material type, color
@@ -2012,6 +2040,7 @@ export function getGenerationPrompt(
       case "living-room-full":
       case "armchair":
         return `### SOFA-SPECIFIC PRESERVATION (CRITICAL - MOST IMPORTANT)
+✓ PARTIAL VIEW: Clean and improve ONLY what is visible in the frame. Do NOT generate, complete, or invent any part of the sofa or room outside the image (e.g. do not add missing cushions or arms).
 ✓ Keep EXACT same sofa style, size, and configuration
 ✓ Keep EXACT same sofa frame shape and leg design
 ✓ Keep EXACT same fabric type [leather/microsuede/linen/velvet/etc.] - DO NOT change material type
@@ -2120,6 +2149,7 @@ export function getGenerationPrompt(
       case "car-trunk":
         return `→ **🎯 MAIN GOAL: CREATE A STUNNING, GORGEOUS, MAGAZINE-QUALITY INTERIOR**
 
+→ **🎯 PRIMARY GOAL - ZERO MIETTES (NON-NEGOTIABLE):** The result FAILS if ANY white/light speck, crumb, or miette remains on floor, mats, carpet, or seats. Clean MAXIMUM—ZERO particles left. No exceptions.
 → **RULE #1 - ZERO MIETTES**: Remove EVERY SINGLE white/light speck, particle, or dot from ALL surfaces. If you see ANY light-colored specks on floor mats, carpet, or seats - DELETE THEM IMMEDIATELY. They are MIETTES and must be 100% GONE.
 
 → **RULE #2 - ACCENTUATE COLORS FOR BEAUTY**: 
@@ -2196,6 +2226,7 @@ export function getGenerationPrompt(
 → **FINAL REQUIREMENTS - STUNNING BEAUTIFUL RENDERING**:
 → Remove ALL trash, residue, pet hair, stains - COMPLETE removal
 → **🎯 FINAL CHECKLIST - DO ALL OF THIS:**
+  → **RENDER RULE**: When drawing the output, floor/mats/carpet/seats = UNIFORM dark color. Do NOT add white/light dots, specks, or grain on these surfaces.
   → **MIETTES CHECK**: Scan ENTIRE image. ANY white/light specks visible? → DELETE THEM ALL. ZERO miettes allowed.
   → **BLACK ACCENTUATION CHECK**: ALL black surfaces (carpet, seats, mats, dashboard) DEEP and RICH? → If NO, make them MUCH DEEPER BLACK.
   → **COLOR ENHANCEMENT CHECK**: ALL colors vibrant and beautiful? → If NO, INCREASE saturation significantly.
@@ -2205,12 +2236,14 @@ export function getGenerationPrompt(
   ✓ Black surfaces DEEP, RICH, INTENSE BLACK - "more black"
   ✓ All colors VIBRANT, SATURATED, BEAUTIFUL
   ✓ Overall appearance: STUNNING, GORGEOUS, MAGAZINE-QUALITY
-→ **REMEMBER**: Your goal is BEAUTY - even if less realistic, make it STUNNING and GORGEOUS with zero miettes and enhanced colors`;
+→ **REMEMBER**: Your goal is BEAUTY - even if less realistic, make it STUNNING and GORGEOUS with zero miettes and enhanced colors
+→ **OUTPUT IMAGE RENDER RULE (CRITICAL):** When you RENDER the output image, floor/mats/carpet/seats must be SMOOTH and UNIFORM dark color. Do NOT draw or add any white, beige, or light dots/specks/grain on these surfaces. ZERO miettes in the rendered result—do not introduce particles while rendering.`;
       case "sofa":
       case "sofa-living-room":
       case "living-room-full":
       case "armchair":
-        return `→ Remove ALL visible stains from fabric (food, drink, dirt, pet, unknown origin)
+        return `→ **🎯 PRIMARY GOAL - MAXIMUM CLEAN (NON-NEGOTIABLE):** The before/after must be VISIBLY different. ALL stains, dark spots, and dirt must be GONE. Fabric must look UNIFORMLY clean. If the result looks almost the same as before, it FAILS.
+→ Remove ALL visible stains from fabric COMPLETELY (food, drink, dirt, pet, unknown origin) - every dark spot, ring, auréole must DISAPPEAR
 → Remove ALL dirt and dust accumulation from sofa surface
 → Remove ALL dust and debris from between cushions
 → Remove ALL pet hair from sofa fabric (thorough cleaning)
@@ -2251,18 +2284,24 @@ ${analysis}
 
 YOUR TASK: Transform this space into its clean, beautiful version.
 
-${spaceType.startsWith("car-") ? `⚠️ **FOR CAR INTERIORS - STYLIZED RENDERING ALLOWED**: This is IMAGE ENHANCEMENT for beauty. The result should be RECOGNIZABLY the same interior, but you can create a STUNNING, GORGEOUS, stylized result. Prioritize visual impact and beauty - even if slightly less realistic, make it BEAUTIFUL.
+${
+  spaceType.startsWith("car-")
+    ? `⚠️ **FOR CAR INTERIORS - STYLIZED RENDERING ALLOWED**: This is IMAGE ENHANCEMENT for beauty. The result should be RECOGNIZABLY the same interior, but you can create a STUNNING, GORGEOUS, stylized result. Prioritize visual impact and beauty - even if slightly less realistic, make it BEAUTIFUL.
 
 ⚠️ **ALLOWED ENHANCEMENTS**: 
   - Slight perspective/composition optimizations for visual appeal
   - Enhanced lighting for beauty
   - Accentuated colors (deeper blacks, more saturated colors)
   - Stylized rendering for magazine-quality result
-  - Visual impact over strict authenticity` : `⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
+  - Visual impact over strict authenticity`
+    : `⚠️ CRITICAL: This is IMAGE EDITING, not image generation. You MUST preserve the EXACT structure, layout, and composition of the original image.
 
-⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.`}
+⚠️ CONSISTENCY REQUIREMENT: For the same input image, you MUST produce IDENTICAL results every time. Follow the analysis EXACTLY and apply the same transformations consistently.`
+}
 
-${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS - PERFECT BEAUTIFUL RENDERING ⚠️⚠️⚠️
+${
+  spaceType.startsWith("car-")
+    ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS - PERFECT BEAUTIFUL RENDERING ⚠️⚠️⚠️
 
 **🎯 YOUR MAIN GOAL: CREATE A STUNNING, GORGEOUS, MAGAZINE-QUALITY INTERIOR**
 
@@ -2299,24 +2338,30 @@ ${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ CRITICAL FOR CAR INTERIORS 
 3. Check if colors are VIBRANT and BEAUTIFUL → If not, increase saturation
 4. Result should look STUNNING and GORGEOUS → If not, enhance more
 
-**REMEMBER**: Your goal is to create a BEAUTIFUL, PERFECT rendering - not just clean, but STUNNING and GORGEOUS with zero miettes and enhanced colors.` : ""}
+**REMEMBER**: Your goal is to create a BEAUTIFUL, PERFECT rendering - not just clean, but STUNNING and GORGEOUS with zero miettes and enhanced colors.`
+    : ""
+}
 
 ## REQUIREMENTS - PRESERVE RECOGNIZABLE STRUCTURE (ALLOW STYLIZED RENDERING):
 
 ### CAMERA & PERSPECTIVE (SIMILAR BUT ALLOW ENHANCEMENT)
 
-${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED ALLOWED**: Similar camera angle and perspective - recognizable but can be slightly enhanced for beauty
+${
+  spaceType.startsWith("car-")
+    ? `✓ **FOR CAR INTERIORS - STYLIZED ALLOWED**: Similar camera angle and perspective - recognizable but can be slightly enhanced for beauty
 ✓ Similar perspective and composition - should be RECOGNIZABLY the same view
 ✓ Similar field of view - can be slightly adjusted for better visual impact
 ✓ Similar depth of field - can be enhanced for visual appeal
 ✓ Similar composition and framing - recognizable but can be optimized for beauty
 ✓ Similar crop and aspect ratio - can be slightly adjusted for better presentation
-✓ **GOAL**: Keep it RECOGNIZABLY the same interior, but allow stylized enhancements for a STUNNING, BEAUTIFUL result` : `✓ EXACT same camera angle and position
+✓ **GOAL**: Keep it RECOGNIZABLY the same interior, but allow stylized enhancements for a STUNNING, BEAUTIFUL result`
+    : `✓ EXACT same camera angle and position
 ✓ EXACT same perspective and vanishing points
 ✓ EXACT same field of view and lens characteristics
 ✓ EXACT same depth of field (what's in focus, what's blurred)
 ✓ EXACT same composition and framing
-✓ EXACT same crop and aspect ratio`}
+✓ EXACT same crop and aspect ratio`
+}
 
 ### STRUCTURAL ELEMENTS (PRESERVE STRUCTURE - BUT CLEAN AGGRESSIVELY)
 
@@ -2349,34 +2394,42 @@ ${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS**: Preserve carpet mat
 
 ### LIGHTING & ATMOSPHERE (SIMILAR BUT CAN BE ENHANCED)
 
-${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - ENHANCED LIGHTING ALLOWED**: Similar natural light direction - recognizable but can be enhanced for beauty
+${
+  spaceType.startsWith("car-")
+    ? `✓ **FOR CAR INTERIORS - ENHANCED LIGHTING ALLOWED**: Similar natural light direction - recognizable but can be enhanced for beauty
 ✓ Similar shadows - can be optimized for visual appeal
 ✓ Similar color temperature - can be slightly enhanced for warmth/beauty
 ✓ Similar overall brightness - can be optimized for visual impact
 ✓ Similar photographic mood - can be enhanced for stunning result
 ✓ Similar time of day appearance - recognizable but can be optimized
 ✓ Similar reflections - can be enhanced for visual appeal
-✓ **ALLOWED**: Slight lighting enhancements for a more beautiful, stunning result - prioritize visual impact` : `✓ EXACT same natural light direction and intensity
+✓ **ALLOWED**: Slight lighting enhancements for a more beautiful, stunning result - prioritize visual impact`
+    : `✓ EXACT same natural light direction and intensity
 ✓ EXACT same shadows (positions, lengths, directions, softness)
 ✓ EXACT same color temperature of light (warm/cool)
 ✓ EXACT same overall brightness level
 ✓ EXACT same photographic mood and atmosphere
 ✓ EXACT same time of day appearance
 ✓ EXACT same reflections and highlights on surfaces
-✓ DO NOT change lighting conditions or add new light sources`}
+✓ DO NOT change lighting conditions or add new light sources`
+}
 
 ### COLORS & PALETTE (ENHANCE & ACCENTUATE COLORS FOR BEAUTY)
 
 ✓ Keep same color palette and color relationships
 ✓ Keep same dominant, secondary, and accent colors
-${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - COLOR ACCENTUATION FOR BEAUTY**: 
+${
+  spaceType.startsWith("car-")
+    ? `✓ **FOR CAR INTERIORS - COLOR ACCENTUATION FOR BEAUTY**: 
   - **BLACK ACCENTUATION**: Make black surfaces (carpet, seats, mats, dashboard) DEEPER, RICHER, MORE INTENSE BLACK - enhance black to be "more black" for beautiful rendering
   - **GREY ACCENTUATION**: Make grey surfaces DEEPER and MORE SATURATED - enhance grey tones for visual appeal
   - **COLOR ENHANCEMENT**: Increase color saturation and intensity for ALL colored surfaces - make colors more vibrant and beautiful
   - **BEAUTIFUL RENDERING**: Even if slightly less realistic, create a STUNNING, BEAUTIFUL result with enhanced colors
   - **GOAL**: Make the interior look GORGEOUS with rich, deep, saturated colors - prioritize beauty over strict realism
   - Black should look DEEPER and RICHER - "more black" than original for visual impact
-  - Colors should be ENHANCED and ACCENTUATED for a beautiful, magazine-quality result` : ""}
+  - Colors should be ENHANCED and ACCENTUATED for a beautiful, magazine-quality result`
+    : ""
+}
 ✓ Enhance colors to appear "fresh", "clean", and "beautiful" - INCREASE saturation and depth for visual appeal
 ✓ Make colors more vibrant and rich - ENHANCE color intensity for beautiful rendering
 ✓ Keep same warm/cool tone balance (but enhance within that balance)
@@ -2394,7 +2447,9 @@ ${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - COLOR ACCENTUATION F
 ✗ Remove leaves, branches, debris (for outdoor/pool spaces)
 ✗ Remove algae, pool debris, floating objects (for pool areas)
 ✗ Remove all visible dirt, dust, and grime accumulation
-${spaceType.startsWith("car-") ? `✗ **CRITICAL FOR CAR INTERIORS - ZERO MIETTES POLICY**: Remove EVERY SINGLE crumb, miette, particle, speck, and stain
+${
+  spaceType.startsWith("car-")
+    ? `✗ **CRITICAL FOR CAR INTERIORS - ZERO MIETTES POLICY**: Remove EVERY SINGLE crumb, miette, particle, speck, and stain
 ✗ **MIETTES ELIMINATION - HIGHEST PRIORITY**: Remove ALL small white specks, light particles, and dots from carpet, seats, floor mats, and ALL surfaces - these are MIETTES and MUST be COMPLETELY REMOVED
 ✗ Remove ALL small particles (white, beige, brown, grey, any color, any size) from carpet, seats, and all surfaces - ZERO TOLERANCE
 ✗ Remove ALL fine dust particles and debris - ZERO TOLERANCE for any visible particles - if you see a speck, REMOVE IT
@@ -2404,18 +2459,24 @@ ${spaceType.startsWith("car-") ? `✗ **CRITICAL FOR CAR INTERIORS - ZERO MIETTE
 ✗ **FLOOR MATS - ZERO MIETTES**: Remove ALL white specks and particles from floor mats - they are MIETTES and must be GONE
 ✗ **SEATS - ZERO MIETTES**: Remove ALL white specks and particles from seat fabric - they are MIETTES and must be GONE
 ✗ **FINAL CHECK**: Before finishing, scan the entire image for ANY white specks, light particles, or small dots - if you see ANY, REMOVE THEM - they are MIETTES
-✗ NO exceptions - EVERY visible particle, crumb, miette, or speck must be removed for PERFECT cleanliness - ZERO MIETTES REMAINING` : ""}
+✗ NO exceptions - EVERY visible particle, crumb, miette, or speck must be removed for PERFECT cleanliness - ZERO MIETTES REMAINING`
+    : ""
+}
 
 ### CLEAN ALL SURFACES (MAKE PRISTINE, PRESERVE MATERIALS)
 
-${spaceType.startsWith("car-") ? `⚠️⚠️⚠️ **CAR INTERIOR CLEANING - HIGHEST PRIORITY** ⚠️⚠️⚠️
+${
+  spaceType.startsWith("car-")
+    ? `⚠️⚠️⚠️ **CAR INTERIOR CLEANING - HIGHEST PRIORITY** ⚠️⚠️⚠️
 
 **THIS IS THE MOST IMPORTANT PART FOR CAR INTERIORS:**
 You are cleaning a CAR INTERIOR. The instructions below are EXTREMELY detailed and you MUST follow them PERFECTLY.
 Every single particle, crumb, miette, and speck MUST be removed. This is not optional - it's MANDATORY.
 Read the cleaning instructions below VERY CAREFULLY and execute them with ZERO TOLERANCE for any remaining particles.
 
-` : ""}
+`
+    : ""
+}
 
 ${spaceSpecificCleaning(spaceType)}
 
@@ -2429,25 +2490,31 @@ ${spaceSpecificCleaning(spaceType)}
 
 ## CRITICAL EDITING RULES (FOLLOW STRICTLY FOR CONSISTENCY):
 
-${spaceType.startsWith("car-") ? `1. **PRESERVE RECOGNIZABLE STRUCTURE**: The space must be RECOGNIZABLY the same interior - similar layout (not necessarily IDENTICAL, but recognizable)
+${
+  spaceType.startsWith("car-")
+    ? `1. **PRESERVE RECOGNIZABLE STRUCTURE**: The space must be RECOGNIZABLY the same interior - similar layout (not necessarily IDENTICAL, but recognizable)
 2. **ALLOW STYLIZED PERSPECTIVE**: Camera angle and composition should be SIMILAR - can be slightly enhanced for beauty (not necessarily IDENTICAL)
 3. **PRESERVE MATERIALS**: Same materials, just clean (carpet stays carpet, leather stays leather) - NO material changes
 4. **ENHANCE COLORS FOR BEAUTY**: ACCENTUATE colors - make black DEEPER and RICHER, increase saturation of all colors for beautiful rendering. This is MANDATORY for car interiors.
 5. **ENHANCE LIGHTING FOR BEAUTY**: Similar lighting conditions - can be slightly enhanced for visual impact and beauty
 6. **PRESERVE FURNITURE POSITIONS**: All furniture in similar positions - recognizable arrangement (not necessarily EXACT)
 7. **CLEAN + ENHANCE**: Remove mess, dirt, stains, miettes AND enhance visual appeal for stunning result
-8. **BEAUTIFUL RENDERING**: Create a STUNNING, GORGEOUS result - even if slightly stylized, prioritize beauty` : `1. PRESERVE STRUCTURE: The space must be RECOGNIZABLY the same space - IDENTICAL layout
+8. **BEAUTIFUL RENDERING**: Create a STUNNING, GORGEOUS result - even if slightly stylized, prioritize beauty`
+    : `1. PRESERVE STRUCTURE: The space must be RECOGNIZABLY the same space - IDENTICAL layout
 2. PRESERVE PERSPECTIVE: Camera angle and composition must be IDENTICAL - no changes
 3. PRESERVE MATERIALS: Same materials, just clean (tiles stay tiles, wood stays wood) - NO material changes
 4. PRESERVE COLORS: Same color palette, just fresh and clean - NO color hue changes
 5. PRESERVE LIGHTING: Same lighting conditions and shadows - IDENTICAL lighting
 6. PRESERVE FURNITURE: All furniture in EXACT same positions - NO movement
 7. ONLY CLEAN: Remove mess, dirt, stains, miettes - nothing else - NO additions or removals of permanent items
-8. BE CONSISTENT: Apply the same cleaning transformations in the same way every time for the same image`}
+8. BE CONSISTENT: Apply the same cleaning transformations in the same way every time for the same image`
+}
 
 ## QUALITY REQUIREMENTS:
 
-${spaceType.startsWith("car-") ? `- **BEAUTIFUL, STUNNING RENDERING**: Create a gorgeous, magazine-quality result - even if slightly idealized
+${
+  spaceType.startsWith("car-")
+    ? `- **BEAUTIFUL, STUNNING RENDERING**: Create a gorgeous, magazine-quality result - even if slightly idealized
 - **ENHANCED COLORS**: Colors should be ACCENTUATED - black deeper and richer, all colors more saturated and vibrant
 - **ZERO MIETTES**: Absolutely NO visible particles, specks, or debris - PERFECT cleanliness
 - **VISUAL IMPACT**: Result should be STUNNING and GORGEOUS - prioritize beauty over strict realism
@@ -2455,17 +2522,21 @@ ${spaceType.startsWith("car-") ? `- **BEAUTIFUL, STUNNING RENDERING**: Create a 
 - Same photographic characteristics (grain, sharpness, exposure) but with enhanced color grading
 - No cartoon, illustration, 3D render, or AI-artifact look
 - Seamless editing (no visible seams, artifacts, or inconsistencies)
-- **GOAL**: Beautiful, perfect, stunning result with zero miettes and enhanced colors` : `- Photorealistic quality (looks like a real photograph, not AI-generated)
+- **GOAL**: Beautiful, perfect, stunning result with zero miettes and enhanced colors`
+    : `- Photorealistic quality (looks like a real photograph, not AI-generated)
 - Natural, believable result (not artificial, fake, or oversaturated)
 - Professional cleaning service standard (thorough but realistic)
 - Same photographic characteristics (grain, sharpness, exposure, color grading)
 - No cartoon, illustration, 3D render, or AI-artifact look
-- Seamless editing (no visible seams, artifacts, or inconsistencies)`}
+- Seamless editing (no visible seams, artifacts, or inconsistencies)`
+}
 
 ## FINAL CHECK (VERIFY ALL BEFORE FINALIZING):
 
 Before finalizing, verify EVERY item:
-${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED CHECKLIST**:
+${
+  spaceType.startsWith("car-")
+    ? `✓ **FOR CAR INTERIORS - STYLIZED CHECKLIST**:
   ✓ Similar camera angle and perspective - RECOGNIZABLY the same view (can be slightly enhanced)
   ✓ Similar interior layout - RECOGNIZABLY the same car interior (not necessarily IDENTICAL)
   ✓ Similar furniture positions - RECOGNIZABLY the same arrangement (can be slightly optimized)
@@ -2476,7 +2547,8 @@ ${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED CHECKLIST**
   ✓ **MIETTES CHECK**: Verify that ALL white specks, light particles, and small dots have been COMPLETELY REMOVED
   ✓ **PERFECT CLEANLINESS**: All surfaces are IMMACULATE - NO MIETTES VISIBLE
   ✓ **BEAUTIFUL RENDERING**: Result is STUNNING, GORGEOUS, MAGAZINE-QUALITY - even if slightly stylized
-  ✓ Result is RECOGNIZABLY the SAME car interior, but STUNNING and BEAUTIFUL with enhanced colors and zero miettes` : `✓ EXACT same camera angle and perspective (no changes)
+  ✓ Result is RECOGNIZABLY the SAME car interior, but STUNNING and BEAUTIFUL with enhanced colors and zero miettes`
+    : `✓ EXACT same camera angle and perspective (no changes)
 ✓ EXACT same room/space layout and dimensions (identical)
 ✓ EXACT same furniture positions and styles (no movement, no style changes)
 ✓ EXACT same materials and patterns (just clean, no material changes)
@@ -2485,16 +2557,21 @@ ${spaceType.startsWith("car-") ? `✓ **FOR CAR INTERIORS - STYLIZED CHECKLIST**
 ✓ ALL clutter removed (thorough cleaning)
 ✓ ALL surfaces clean (spotless)
 ✓ Result is RECOGNIZABLY the SAME space, professionally cleaned
-✓ Result would be IDENTICAL if processed again with same input`}
+✓ Result would be IDENTICAL if processed again with same input`
+}
 
 ${spaceType.startsWith("car-") ? `⚠️ **FOR CAR INTERIORS**: Result should be RECOGNIZABLY the same interior but STUNNING and BEAUTIFUL - prioritize visual impact and beauty over strict authenticity.` : `⚠️ CONSISTENCY CHECK: If you process this same image again, you MUST produce the EXACT same result.`}
 
-${spaceType.startsWith("car-") ? `Think: "This is the SAME car interior, but now it's STUNNING and GORGEOUS. I have:
+${
+  spaceType.startsWith("car-")
+    ? `Think: "This is the SAME car interior, but now it's STUNNING and GORGEOUS. I have:
 1. DELETED ALL miettes - ZERO white/light specks visible anywhere
 2. ACCENTUATED ALL black surfaces - made them DEEPER, RICHER, MORE INTENSE BLACK - 'more black'
 3. ENHANCED ALL colors - increased saturation to make them vibrant and beautiful
 4. Created a PERFECT, IMMACULATE, BEAUTIFUL result - magazine-quality, showroom-quality
-The interior structure is IDENTICAL, but it's PERFECTLY CLEAN with ZERO miettes and ENHANCED, ACCENTUATED colors. Black is DEEP and RICH. Colors are VIBRANT and BEAUTIFUL. The result is STUNNING and GORGEOUS - even if slightly idealized, it's BEAUTIFUL. Every time I see this image, I will create this STUNNING, BEAUTIFUL result with zero miettes and enhanced colors."` : `Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`}`,
+The interior structure is IDENTICAL, but it's PERFECTLY CLEAN with ZERO miettes and ENHANCED, ACCENTUATED colors. Black is DEEP and RICH. Colors are VIBRANT and BEAUTIFUL. The result is STUNNING and GORGEOUS - even if slightly idealized, it's BEAUTIFUL. Every time I see this image, I will create this STUNNING, BEAUTIFUL result with zero miettes and enhanced colors."`
+    : `Think: "This is the SAME photograph, taken 2 hours after a professional cleaning crew finished. The space is IDENTICAL, just spotlessly clean. Every time I see this image, I will clean it in exactly the same way."`
+}`,
 
     marketing: `YOU ARE ENHANCING AN EXISTING IMAGE FOR MARKETING.
 
@@ -2588,8 +2665,8 @@ Think: "This is the same space, professionally staged and photographed for a lux
       spaceType === "pool"
         ? "pool"
         : spaceType === "outdoor" || spaceType === "balcony"
-        ? "outdoor"
-        : "home"
+          ? "outdoor"
+          : "home"
     } magazine."`,
 
     stylized: `YOU ARE CREATING AN IDEALIZED VERSION OF AN EXISTING IMAGE.
@@ -2658,8 +2735,8 @@ ${
       spaceType === "pool"
         ? "pool"
         : spaceType === "outdoor" || spaceType === "balcony"
-        ? "outdoor"
-        : "home"
+          ? "outdoor"
+          : "home"
     }" version of this space
 
 ## QUALITY:

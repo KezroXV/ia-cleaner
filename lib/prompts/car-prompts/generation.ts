@@ -1,19 +1,26 @@
-import type { CarSpaceType, CarRenderMode } from '../../types/car-types';
+import type { CarSpaceType, CarRenderMode } from "../../types/car-types";
 
 /**
  * Génère le prompt de nettoyage pour le mode Perfect Clean (92% fidélité)
  */
 export function getCarPerfectCleanPrompt(
   analysis: string,
-  spaceType: CarSpaceType
+  spaceType: CarSpaceType,
 ): string {
   return `YOU ARE EDITING A CAR INTERIOR IMAGE - PERFECT CLEAN MODE (75% FIDELITY - SHOWROOM STANDARD)
+
+**FIRST RULE:** In your OUTPUT image, floor/mats/carpet/seats must have ZERO white or light pixels. Render them as SOLID, UNIFORM dark color. Do not draw or add any specks, dust, or particles.
 
 ORIGINAL IMAGE DETAILED ANALYSIS:
 ${analysis}
 
 YOUR TASK: Transform this EXACT SAME car interior into its SHOWROOM-PERFECT version - 
 as if it's a brand new Mercedes displayed in a luxury dealership.
+
+**🎯 PRIMARY GOAL - ZERO MIETTES (NON-NEGOTIABLE):**
+The result is FAILED if ANY white/light speck, crumb, miette, or particle remains on floor, carpet, floor mats, seats, or any visible surface. The goal is to clean the MAXIMUM: NOT A SINGLE particle left. Every tiny dot must be REMOVED. If you leave "a few" miettes for realism, the output is WRONG—we want ZERO.
+
+⚠️ PARTIAL VIEW RULE: The image may show ONLY A PART of the car (e.g. floor only, seat base only, door sill). You MUST clean and improve ONLY what is VISIBLE in the frame. Do NOT generate, complete, extend, or invent any part of the car that is outside the image or cut by the frame. Do NOT draw steering wheel, dashboard, or other seats if they are not in the image. Preserve the exact same framing and composition—only the visible areas become clean.
 
 **REFERENCE STANDARD**: Think of a pristine Mercedes-Benz showroom interior where:
 - Every surface is immaculate and gleaming
@@ -62,17 +69,18 @@ This means:
    - No moving, removing, or adding items
    - No rearranging of objects
 
-4. CLEANLINESS: Improve dramatically
-   - Remove ALL visible dirt, dust, particles (every crumb, miette, speck)
+4. CLEANLINESS: MAXIMUM - ZERO particles on ANY surface
+   - **EVERY surface** (floor, mats, carpet, seats, sills, console): ZERO white/light specks, ZERO miettes, ZERO crumbs. Not "almost clean"—COMPLETELY clean.
+   - Remove ALL visible dirt, dust, particles (every crumb, miette, speck)—leave NONE
    - Remove all stains, spills, dried marks
    - Remove pet hair completely
-   - Clean all surfaces until they look fresh
    - Remove all debris between seats and in crevices
    - Clean windows inside (remove condensation, dust, smudges)
    - Clean dashboard until pristine
    - Clean steering wheel until immaculate
+   - **Seats and carpet (if visible):** same ZERO tolerance—no particles, no specks, no dust
    
-   **⚠️⚠️⚠️ FLOOR MATS - ULTRA-CRITICAL CLEANING REQUIREMENT ⚠️⚠️⚠️**
+   **⚠️⚠️⚠️ FLOOR MATS & CARPET - ULTRA-CRITICAL: ZERO MIETTES ⚠️⚠️⚠️**
    
    Floor mats and carpets MUST be ABSOLUTELY PERFECT - SHOWROOM BLACK:
    
@@ -128,6 +136,12 @@ in luxury car advertisements."
 🔲 Uniformly clean surface
 🔲 Showroom-black finish
 
+**⚠️ BEFORE OUTPUT - FINAL MIETTES CHECK (MANDATORY):**
+Scan the entire generated image: floor, mats, carpet, seats, sills. If you see ANY white/light dot, speck, or particle ANYWHERE, the image is INVALID—remove it. The output must have ZERO miettes on every surface. No exceptions.
+
+**⚠️⚠️ OUTPUT IMAGE RENDER RULE (CRITICAL - SOURCE OF MIETTES BUG):**
+When you RENDER/DRAW the output image, floor, mats, carpet, and seats must be SMOOTH and UNIFORM in color. Do NOT draw, add, or render any white, beige, gray, or light-colored dots, specks, or pixels on these dark surfaces. Do NOT add "texture," "grain," or "noise" that looks like particles—render these surfaces as SOLID, CLEAN, single-color dark. If your model tends to add small light dots when drawing dark fabric/carpet, SUPPRESS that: the output must have ZERO light pixels on floor/mats/carpet/seats. This is the #1 cause of "miettes left": do not introduce them while rendering.
+
 5. COLORS: Enhancement allowed for cleanliness
    - Black surfaces (especially floor mats): Make DEEPER and RICHER
    - Floor mats: Make DARKER, more saturated (deep black/dark gray)
@@ -182,7 +196,9 @@ in luxury car advertisements."
 Think: "This is the SAME car interior, but now it looks like a brand new Mercedes-Benz 
 in a luxury showroom. SHOWROOM PERFECTION - the kind of cleanliness you see in 
 high-end car dealerships where every detail is immaculate. Floor mats are PRISTINE 
-(zero dust), leather gleams, surfaces sparkle. The 'never been driven' level of clean."`;
+(zero dust), leather gleams, surfaces sparkle. The 'never been driven' level of clean."
+
+**LAST INSTRUCTION BEFORE RENDERING:** In the image you output, floor/mats/carpet/seats = UNIFORM dark color, NO white/light dots. Do not add any speckle or particle-like pixels. ZERO miettes in the rendered result.`;
 }
 
 /**
@@ -190,7 +206,7 @@ high-end car dealerships where every detail is immaculate. Floor mats are PRISTI
  */
 export function getCarEnhancedBeautyPrompt(
   analysis: string,
-  spaceType: CarSpaceType
+  spaceType: CarSpaceType,
 ): string {
   return `YOU ARE EDITING A CAR INTERIOR IMAGE - ENHANCED BEAUTY MODE (85% FIDELITY)
 
@@ -199,6 +215,10 @@ ${analysis}
 
 YOUR TASK: Transform this car interior into LUXURY SHOWROOM PERFECTION - 
 professional quality suitable for premium marketing/magazine photography.
+
+**🎯 PRIMARY GOAL - ZERO MIETTES (NON-NEGOTIABLE):** The result FAILS if ANY white/light speck, crumb, or miette remains on floor, mats, carpet, or seats. Clean MAXIMUM—ZERO particles left. No exceptions.
+
+⚠️ PARTIAL VIEW RULE: Clean and enhance ONLY what is visible in the frame. Do NOT complete or invent elements outside the image (e.g. do not add steering wheel or full seat if only floor is visible). Same framing and composition—only visible areas become clean and enhanced.
 
 **REFERENCE STANDARD**: Mercedes-Benz AMG showroom level - ABSOLUTE PERFECTION.
 Every surface must be IMMACULATE, floor mats PRISTINE, lighting optimized for luxury appeal.
@@ -323,7 +343,9 @@ This means:
 
 Think: "This is SHOWROOM PERFECTION - like a Mercedes-Benz in a luxury dealership, 
 photographed for premium marketing. Floor mats are ABSOLUTELY SPOTLESS, leather gleams, 
-surfaces sparkle. The 'magazine cover' level of perfection with enhanced colors and lighting."`;
+surfaces sparkle. The 'magazine cover' level of perfection with enhanced colors and lighting."
+
+**OUTPUT IMAGE RENDER RULE:** When RENDERING the output, floor/mats/carpet/seats = SMOOTH, UNIFORM dark color. Do NOT draw or add any white/light dots, specks, or grain on these surfaces. ZERO miettes in the rendered image.`;
 }
 
 /**
@@ -331,7 +353,7 @@ surfaces sparkle. The 'magazine cover' level of perfection with enhanced colors 
  */
 export function getCarStylizedLuxuryPrompt(
   analysis: string,
-  spaceType: CarSpaceType
+  spaceType: CarSpaceType,
 ): string {
   return `YOU ARE EDITING A CAR INTERIOR IMAGE - STYLIZED LUXURY MODE (70% FIDELITY)
 
@@ -340,6 +362,10 @@ ${analysis}
 
 YOUR TASK: Transform this car interior into ULTIMATE LUXURY PERFECTION - 
 aspirational, beautiful, showroom-perfect (like premium Mercedes-AMG marketing photography).
+
+**🎯 PRIMARY GOAL - ZERO MIETTES (NON-NEGOTIABLE):** The result FAILS if ANY white/light speck, crumb, or miette remains. Clean MAXIMUM—ZERO particles on every surface. No exceptions.
+
+⚠️ PARTIAL VIEW RULE: Clean and stylize ONLY what is visible in the frame. Do NOT complete or invent out-of-frame parts (e.g. do not add missing seats or dashboard). Same framing—only visible areas become pristine and luxurious.
 
 **REFERENCE STANDARD**: The most pristine luxury car showroom you can imagine.
 Absolutely IMMACULATE - floor mats PERFECT, every surface gleaming, zero imperfections.
@@ -470,7 +496,9 @@ This means:
 
 Think: "This is SHOWROOM PERFECTION at its peak - the version you see in Mercedes-AMG 
 marketing materials. ABSOLUTELY PRISTINE floor mats (zero dust), gleaming surfaces, 
-luxury perfection. The 'dream car' visualization that makes you want to own it immediately."`;
+luxury perfection. The 'dream car' visualization that makes you want to own it immediately."
+
+**OUTPUT IMAGE RENDER RULE:** When RENDERING the output, floor/mats/carpet/seats = SMOOTH, UNIFORM dark color. Do NOT draw or add any white/light dots, specks, or grain on these surfaces. ZERO miettes in the rendered image.`;
 }
 
 /**
@@ -479,7 +507,7 @@ luxury perfection. The 'dream car' visualization that makes you want to own it i
 export function getCarGenerationPrompt(
   mode: CarRenderMode,
   analysis: string,
-  spaceType: CarSpaceType
+  spaceType: CarSpaceType,
 ): string {
   switch (mode) {
     case "perfect-clean":
